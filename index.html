@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What keeps people from the gym?</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fafaf8; color:#2c2c2a; }
+
+  .hero { text-align:center; padding:3.5rem 2rem 1rem; max-width:700px; margin:0 auto; }
+  .hero h1 { font-size:2rem; font-weight:500; line-height:1.3; margin-bottom:8px; }
+  .hero p { font-size:0.95rem; color:#888; line-height:1.6; }
+
+  .chart-area { display:flex; justify-content:center; padding:1rem 0 0; }
+  svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+
+  .prompt { text-align:center; font-size:0.8rem; color:#b4b2a9; margin-top:0; padding-bottom:1.5rem; }
+
+  .about { max-width:640px; margin:0 auto; padding:2rem 2rem 1rem; }
+  .about h2 { font-size:1.1rem; font-weight:500; margin-bottom:8px; }
+  .about p { font-size:0.85rem; color:#666; line-height:1.7; margin-bottom:12px; }
+
+  .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#b4b2a9; border-top:1px solid #e8e7e2; margin-top:2rem; }
+
+  .tooltip { position:fixed; background:white; border:1px solid #d3d1c7; border-radius:10px;
+    padding:12px 16px; font-size:0.82rem; pointer-events:none; opacity:0; transition:opacity 0.15s;
+    box-shadow:0 4px 16px rgba(0,0,0,0.08); z-index:100; max-width:240px; line-height:1.6; }
+  .tooltip-title { font-weight:600; margin-bottom:4px; }
+  .tooltip-stat { font-size:0.75rem; color:#888; }
+  .tooltip-cta { font-size:0.75rem; color:#0C447C; margin-top:6px; font-weight:500; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>What keeps people from the gym?</h1>
+  <p>We interviewed 8 people about their barriers to physical activity. These are the patterns we found. Click a barrier to explore the data behind it.</p>
+</div>
+
+<div class="chart-area">
+  <svg id="bubbles" width="800" height="480"></svg>
+</div>
+<div class="prompt">Click a bubble to explore that barrier</div>
+
+<div class="about">
+  <h2>About this project</h2>
+  <p>This research explores the common barriers that prevent people from going to the gym, drawing on qualitative interviews with 8 participants aged 18-30 in the Greater Boston area. We examined psychological barriers like body image and gym intimidation alongside logistical barriers like cost and proximity.</p>
+  <p>What we found surprised us: the barriers people <em>feel</em> most strongly — body image, social media's influence — are rarely the ones they <em>name</em> as their biggest obstacle. Instead, time and cost dominate the conversation, while deeper psychological barriers operate quietly underneath.</p>
+  <p>Each visualization on this site addresses a specific barrier with real data and real quotes from our participants.</p>
+</div>
+
+<div class="footer">
+  CS 7250 Information Visualization &middot; Northeastern University &middot; 2026
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+var barriers = [
+  {
+    name: "Body image &\nsocial media",
+    shortName: "Body image & social media",
+    count: 8,
+    mentions: 49,
+    desc: "Every participant discussed how social media affects their self-image — yet none named it as their biggest barrier.",
+    color: "#D4537E",
+    link: "mindmap.html"
+  },
+  {
+    name: "Gym\nintimidation",
+    shortName: "Gym intimidation",
+    count: 8,
+    mentions: 13,
+    desc: "All 8 participants felt gyms cater to certain types of people. But the same people who feel intimidated thrive in group settings.",
+    color: "#ED93B1",
+    link: "intimidation.html"
+  },
+  {
+    name: "Time\nconstraints",
+    shortName: "Time constraints",
+    count: 7,
+    mentions: 18,
+    desc: "The most commonly named barrier — but when we broke down how participants spend their time, most had hours going to social media.",
+    color: "#378ADD",
+    link: "mindmap.html"
+  },
+  {
+    name: "Cost &\naccess",
+    shortName: "Cost & access",
+    count: 6,
+    mentions: 11,
+    desc: "How close is the nearest gym you can afford? Explore an interactive map of gym accessibility across Boston.",
+    color: "#0C447C",
+    link: "boston_gym_map_v4.html"
+  },
+];
+
+var svg = document.getElementById("bubbles");
+var w = 800, h = 480;
+var TT = document.getElementById("tooltip");
+
+function showTT(e, b) {
+  TT.innerHTML =
+    '<div class="tooltip-title">' + b.shortName + '</div>' +
+    '<div class="tooltip-stat">' + b.count + ' of 8 participants &middot; ' + b.mentions + ' total mentions</div>' +
+    '<div style="margin-top:6px;font-size:0.78rem;line-height:1.5">' + b.desc + '</div>' +
+    '<div class="tooltip-cta">Click to explore &rarr;</div>';
+  TT.style.opacity = 1;
+  moveTT(e);
+}
+function moveTT(e) {
+  var x = e.clientX + 16;
+  var y = e.clientY - 16;
+  if (x + 250 > window.innerWidth) x = e.clientX - 260;
+  TT.style.left = x + "px";
+  TT.style.top = y + "px";
+}
+function hideTT() { TT.style.opacity = 0; }
+
+var positions = [
+  { x: 320, y: 230 },
+  { x: 520, y: 200 },
+  { x: 180, y: 280 },
+  { x: 460, y: 360 },
+];
+
+barriers.forEach(function(b, i) {
+  var r = 30 + b.count * 12;
+  var pos = positions[i];
+  var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+  g.style.cursor = "pointer";
+
+  // Shadow
+  var shadow = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  shadow.setAttribute("cx", pos.x + 2);
+  shadow.setAttribute("cy", pos.y + 3);
+  shadow.setAttribute("r", r);
+  shadow.setAttribute("fill", "rgba(0,0,0,0.06)");
+  g.appendChild(shadow);
+
+  // Main circle
+  var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  circle.setAttribute("cx", pos.x);
+  circle.setAttribute("cy", pos.y);
+  circle.setAttribute("r", r);
+  circle.setAttribute("fill", b.color);
+  circle.setAttribute("opacity", "0.85");
+  circle.style.transition = "r 0.25s ease, opacity 0.2s";
+  g.appendChild(circle);
+
+  // Count label
+  var countLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  countLabel.setAttribute("x", pos.x);
+  countLabel.setAttribute("y", pos.y - 14);
+  countLabel.setAttribute("text-anchor", "middle");
+  countLabel.setAttribute("dominant-baseline", "central");
+  countLabel.setAttribute("font-size", "22px");
+  countLabel.setAttribute("font-weight", "600");
+  countLabel.setAttribute("fill", "white");
+  countLabel.setAttribute("pointer-events", "none");
+  countLabel.textContent = b.count + "/8";
+  g.appendChild(countLabel);
+
+  // Name lines
+  var lines = b.name.split("\n");
+  lines.forEach(function(line, li) {
+    var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", pos.x);
+    text.setAttribute("y", pos.y + 8 + li * 14);
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("dominant-baseline", "central");
+    text.setAttribute("font-size", "11px");
+    text.setAttribute("font-weight", "500");
+    text.setAttribute("fill", "rgba(255,255,255,0.9)");
+    text.setAttribute("pointer-events", "none");
+    text.textContent = line;
+    g.appendChild(text);
+  });
+
+  // Interactions
+  g.addEventListener("mouseenter", function(e) {
+    circle.setAttribute("opacity", "1");
+    circle.setAttribute("r", r + 6);
+    shadow.setAttribute("r", r + 6);
+    showTT(e, b);
+  });
+  g.addEventListener("mousemove", moveTT);
+  g.addEventListener("mouseleave", function() {
+    circle.setAttribute("opacity", "0.85");
+    circle.setAttribute("r", r);
+    shadow.setAttribute("r", r);
+    hideTT();
+  });
+  g.addEventListener("click", function() {
+    window.location.href = b.link;
+  });
+
+  svg.appendChild(g);
+});
+</script>
+</body>
+</html>
