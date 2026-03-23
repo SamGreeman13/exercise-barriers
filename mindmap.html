@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two sides of your time</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fafaf8; color:#2c2c2a; overflow-x:hidden; }
+
+  .header { text-align:center; padding:2.5rem 2rem 1rem; }
+  .header h1 { font-size:1.6rem; font-weight:500; }
+  .header p { font-size:0.85rem; color:#888; margin-top:4px; }
+
+  .map-container { position:relative; width:100%; max-width:1200px; margin:0 auto; padding:1rem 2rem 3rem; }
+
+  .center-node { position:absolute; left:50%; transform:translate(-50%,-50%);
+    width:120px; height:120px; border-radius:50%; background:white;
+    border:3px solid #2c2c2a; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; z-index:10; }
+  .center-label { font-size:0.75rem; font-weight:500; color:#2c2c2a; margin-top:4px; }
+
+  .branch-label { position:absolute; z-index:5; font-size:0.85rem; font-weight:500;
+    padding:8px 16px; border-radius:8px; }
+  .branch-left { background:#FCEBEB; color:#791F1F; }
+  .branch-right { background:#EAF3DE; color:#27500A; }
+
+  .quote { position:absolute; border-radius:10px; padding:14px 16px;
+    width:220px; font-size:0.75rem; line-height:1.55;
+    box-shadow:0 1px 6px rgba(0,0,0,0.04); transition:transform 0.2s, box-shadow 0.2s;
+    cursor:default; z-index:5; }
+  .quote:hover { transform:scale(1.04); box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+  .quote-text { font-style:italic; }
+  .quote-attr { margin-top:8px; font-size:0.7rem; font-weight:500; font-style:normal; }
+
+  .sent-n2 { background:#FCEBEB; color:#791F1F; }
+  .sent-n2 .quote-attr { color:#A32D2D; }
+  .sent-n1 { background:#F7C1C1; color:#791F1F; }
+  .sent-n1 .quote-attr { color:#A32D2D; }
+  .sent-0 { background:#FAEEDA; color:#633806; }
+  .sent-0 .quote-attr { color:#854F0B; }
+  .sent-p1 { background:#E1F5EE; color:#085041; }
+  .sent-p1 .quote-attr { color:#0F6E56; }
+  .sent-p2 { background:#EAF3DE; color:#27500A; }
+  .sent-p2 .quote-attr { color:#3B6D11; }
+
+  .connections { position:absolute; top:0; left:0; width:100%; height:100%; z-index:1; pointer-events:none; }
+
+  .stats-bar { display:flex; justify-content:center; gap:3rem; padding:1.5rem; flex-wrap:wrap; }
+  .stat { text-align:center; }
+  .stat-num { font-size:1.8rem; font-weight:500; }
+  .stat-label { font-size:0.75rem; color:#888; margin-top:2px; }
+
+  @media (max-width:900px) {
+    .quote { width:170px; font-size:0.68rem; padding:10px 12px; }
+    .center-node { width:90px; height:90px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>How does your time make you feel?</h1>
+  <p>Real quotes from interview participants on social media vs. exercise</p>
+</div>
+
+<div class="map-container" id="mapContainer">
+  <svg class="connections" id="connections"></svg>
+  <div class="center-node" id="centerNode">
+    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#2c2c2a" stroke-width="1.5">
+      <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 4-7 8-7s8 3 8 7"/>
+    </svg>
+    <div class="center-label">You</div>
+  </div>
+  <div class="branch-label branch-left" id="branchLeft">Scrolling social media</div>
+  <div class="branch-label branch-right" id="branchRight">Going to the gym</div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num" style="color:#E24B4A">62%</div>
+    <div class="stat-label">felt negative after<br>social media</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" style="color:#EF9F27">3-5 hrs</div>
+    <div class="stat-label">average daily<br>social media time</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" style="color:#1D9E75">100%</div>
+    <div class="stat-label">felt positive about<br>exercise outcomes</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num" style="color:#1D9E75">0.5-1 hr</div>
+    <div class="stat-label">typical gym<br>session length</div>
+  </div>
+</div>
+
+<script>
+var quotes = [
+  {
+    text: "Makes me feel absent-minded and like I'm not really experiencing anything.",
+    participant: "Interviewee 1",
+    sentiment: -1,
+    side: "left"
+  },
+  {
+    text: "I view it as a way to relax or a reward, but afterwards, I find myself comparing myself...makes me feel behind in life...there's always something you could be doing to be better. And is what we are looking at online real or is it crafted for engagement?",
+    participant: "Interviewee 3",
+    sentiment: -2,
+    side: "left"
+  },
+  {
+    text: "Instagram is just like mindless fun.",
+    participant: "Interviewee 5",
+    sentiment: 0,
+    side: "left"
+  },
+  {
+    text: "Makes me feel like I am too dependent on technology and social media to get gratification...It is designed to make people question themselves, how they feel and how they look, and it is very unhealthy.",
+    participant: "Interviewee 6",
+    sentiment: -2,
+    side: "left"
+  },
+  {
+    text: "I know a great majority of it is garbage, so it's this distress of giving my time and energy to it when I could be doing something more directly productive...It's kind of like it's a drug in that aspect.",
+    participant: "Interviewee 7",
+    sentiment: -2,
+    side: "left"
+  },
+  {
+    text: "I feel like there's a very direct intention behind content...it's exactly what you do to get views on an app like Instagram, you create content that immediately caters to certain people's biases.",
+    participant: "Interviewee 7",
+    sentiment: -1,
+    side: "left"
+  },
+  {
+    text: "Better physique, improving overall health and wellness.",
+    participant: "Interviewee 1",
+    sentiment: 1,
+    side: "right"
+  },
+  {
+    text: "Working out also helps with my mental health.",
+    participant: "Interviewee 2",
+    sentiment: 1,
+    side: "right"
+  },
+  {
+    text: "It's taught me lots about determination and also taught me that it allows me to rest more and understand balance.",
+    participant: "Interviewee 2",
+    sentiment: 2,
+    side: "right"
+  },
+  {
+    text: "When I am working out lots, when I am getting outside more — that's when I feel my best.",
+    participant: "Interviewee 3",
+    sentiment: 2,
+    side: "right"
+  },
+  {
+    text: "I feel like I make better choices when I am actively working out.",
+    participant: "Interviewee 3",
+    sentiment: 2,
+    side: "right"
+  },
+  {
+    text: "I also feel it is very important to have an active and physical lifestyle because it influences positive impact.",
+    participant: "Interviewee 4",
+    sentiment: 1,
+    side: "right"
+  },
+  {
+    text: "When I run or when I used to lift, my primary motivation was because of the endorphins. I get a really insane runner's high...so that really motivates me.",
+    participant: "Interviewee 5",
+    sentiment: 2,
+    side: "right"
+  },
+  {
+    text: "Once I was doing extreme exercise, I started discovering the rush, the runner's high...this primal connection and it's a high, it feels really good. You go grab the dumbbells and you move them around and it feels good and it's fun.",
+    participant: "Interviewee 7",
+    sentiment: 2,
+    side: "right"
+  },
+  {
+    text: "Doing things like exerting myself is really great for my mental health...if my mental health is good, I am usually better about choosing the right foods, being active, et cetera.",
+    participant: "Interviewee 7",
+    sentiment: 2,
+    side: "right"
+  },
+];
+
+var sentimentClass = {
+  '-2': 'sent-n2', '-1': 'sent-n1', '0': 'sent-0', '1': 'sent-p1', '2': 'sent-p2'
+};
+var sentimentLineColor = {
+  '-2': '#791F1F', '-1': '#E24B4A', '0': '#EF9F27', '1': '#5DCAA5', '2': '#1D9E75'
+};
+
+var container = document.getElementById("mapContainer");
+var containerW = container.offsetWidth;
+var centerX = containerW / 2;
+
+var leftQuotes = quotes.filter(function(q) { return q.side === "left"; });
+var rightQuotes = quotes.filter(function(q) { return q.side === "right"; });
+
+function placeQuotes(quoteList, side) {
+  var positions = [];
+  var currentY = 30;
+
+  quoteList.forEach(function(q, i) {
+    var div = document.createElement("div");
+    var cls = sentimentClass[String(q.sentiment)] || 'sent-0';
+    div.className = "quote " + cls;
+
+    div.innerHTML =
+      '<div class="quote-text">\u201C' + q.text + '\u201D</div>' +
+      '<div class="quote-attr">\u2014 ' + q.participant + '</div>';
+
+    var x;
+    if (side === "left") {
+      x = 15 + (i % 2) * 25;
+    } else {
+      x = containerW - 235 - (i % 2) * 25;
+    }
+
+    div.style.left = x + "px";
+    div.style.top = currentY + "px";
+    container.appendChild(div);
+
+    var cardHeight = div.offsetHeight;
+
+    positions.push({
+      x: side === "left" ? x + 220 : x,
+      y: currentY + cardHeight / 2,
+      sentiment: q.sentiment
+    });
+
+    currentY += cardHeight + 20;
+  });
+  return positions;
+}
+
+var leftPos = placeQuotes(leftQuotes, "left");
+var rightPos = placeQuotes(rightQuotes, "right");
+
+// Set container height based on actual content
+var maxBottom = 0;
+document.querySelectorAll('.quote').forEach(function(el) {
+  var bottom = el.offsetTop + el.offsetHeight;
+  if (bottom > maxBottom) maxBottom = bottom;
+});
+var containerH = maxBottom + 80;
+container.style.height = containerH + "px";
+
+var leftMidY = (leftPos[0].y + leftPos[leftPos.length - 1].y) / 2;
+var rightMidY = (rightPos[0].y + rightPos[rightPos.length - 1].y) / 2;
+var centerY = (leftMidY + rightMidY) / 2;
+
+// Position center node and branch labels
+var centerNode = document.getElementById("centerNode");
+centerNode.style.top = centerY + "px";
+
+document.getElementById("branchLeft").style.left = (centerX - 280) + "px";
+document.getElementById("branchLeft").style.top = (centerY - 20) + "px";
+document.getElementById("branchRight").style.left = (centerX + 140) + "px";
+document.getElementById("branchRight").style.top = (centerY - 20) + "px";
+
+// Draw connections
+var svg = document.getElementById("connections");
+svg.setAttribute("width", containerW);
+svg.setAttribute("height", containerH);
+
+function drawConnection(x1, y1, x2, y2, color) {
+  var cp1x = x1 + (x2 - x1) * 0.4;
+  var cp2x = x1 + (x2 - x1) * 0.6;
+  var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d",
+    "M " + x1 + " " + y1 +
+    " C " + cp1x + " " + y1 + " " + cp2x + " " + y2 + " " + x2 + " " + y2
+  );
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke", color);
+  path.setAttribute("stroke-width", "1.5");
+  path.setAttribute("opacity", "0.25");
+  svg.appendChild(path);
+}
+
+leftPos.forEach(function(pos) {
+  var color = sentimentLineColor[String(pos.sentiment)] || '#888';
+  drawConnection(pos.x, pos.y, centerX - 60, centerY, color);
+});
+
+rightPos.forEach(function(pos) {
+  var color = sentimentLineColor[String(pos.sentiment)] || '#888';
+  drawConnection(centerX + 60, centerY, pos.x, pos.y, color);
+});
+</script>
+</body>
+</html>

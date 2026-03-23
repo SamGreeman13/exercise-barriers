@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landing page options</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fafaf8; color:#2c2c2a; }
+  .page { max-width:900px; margin:0 auto; padding:2rem; }
+  h1 { font-size:1.5rem; font-weight:500; text-align:center; margin-bottom:4px; }
+  .subtitle { font-size:0.85rem; color:#888; text-align:center; margin-bottom:1rem; }
+  .divider { border:none; border-top:2px solid #e8e7e2; margin:3rem 0; }
+  h2 { font-size:1.2rem; font-weight:500; margin-bottom:0.5rem; }
+  .option-label { font-size:0.8rem; color:#888; margin-bottom:1.5rem; }
+  .chart-area { display:flex; justify-content:center; margin:1rem 0; }
+  .tooltip { position:fixed; background:white; border:1px solid #d3d1c7; border-radius:8px;
+    padding:10px 14px; font-size:0.8rem; pointer-events:none; opacity:0; transition:opacity 0.15s;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08); z-index:100; max-width:220px; line-height:1.5; }
+  svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>What keeps people from the gym?</h1>
+<p class="subtitle">Click a barrier to explore how it affects real people — and what can be done about it.</p>
+
+<hr class="divider">
+<h2>Option A: Bubble chart</h2>
+<p class="option-label">Circle size = how many of 8 participants mentioned this barrier</p>
+<div class="chart-area"><svg id="bubbles" width="800" height="500"></svg></div>
+
+<hr class="divider">
+<h2>Option B: Nested proportional area chart</h2>
+<p class="option-label">Concentric circles — outer ring = most common, inner = least</p>
+<div class="chart-area"><svg id="nested" width="600" height="600"></svg></div>
+
+<hr class="divider">
+<h2>Option C: Radial bar chart</h2>
+<p class="option-label">Bars radiate from center — longer = more common</p>
+<div class="chart-area"><svg id="radial" width="600" height="600"></svg></div>
+
+</div>
+<div class="tooltip" id="tooltip"></div>
+
+<script>
+var barriers = [
+  { name:"Body image", count:8, total:25, color:"#D4537E", cat:"Psychological", link:"mindmap.html" },
+  { name:"Social media\ninfluence", count:8, total:24, color:"#ED93B1", cat:"Psychological", link:"mindmap.html" },
+  { name:"Gym\nintimidation", count:8, total:13, color:"#F4C0D1", cat:"Psychological", link:"#" },
+  { name:"Time\nconstraints", count:7, total:18, color:"#378ADD", cat:"Logistical", link:"time_budget.html" },
+  { name:"Social\nsupport", count:7, total:21, color:"#85B7EB", cat:"Logistical", link:"#" },
+  { name:"Cost /\naccess", count:6, total:11, color:"#0C447C", cat:"Logistical", link:"boston_gym_map_v3.html" },
+  { name:"Mental\nhealth", count:6, total:8, color:"#534AB7", cat:"Psychological", link:"#" },
+  { name:"Low\nmotivation", count:3, total:4, color:"#888780", cat:"Other", link:"#" },
+  { name:"Lack of\nknowledge", count:2, total:3, color:"#B4B2A9", cat:"Other", link:"#" },
+];
+
+var TT = document.getElementById("tooltip");
+function showTT(e, html) { TT.innerHTML = html; TT.style.opacity = 1; TT.style.left = (e.clientX+14)+"px"; TT.style.top = (e.clientY-14)+"px"; }
+function moveTT(e) { TT.style.left = (e.clientX+14)+"px"; TT.style.top = (e.clientY-14)+"px"; }
+function hideTT() { TT.style.opacity = 0; }
+
+/* ============================================
+   OPTION A: BUBBLE CHART
+   ============================================ */
+(function() {
+  var svg = document.getElementById("bubbles");
+  var w = 800, h = 500, cx = w/2, cy = h/2;
+
+  var sorted = barriers.slice().sort(function(a,b) { return b.count - a.count; });
+
+  var positions = [
+    {x:400, y:250},
+    {x:250, y:220},
+    {x:550, y:220},
+    {x:160, y:350},
+    {x:640, y:350},
+    {x:320, y:400},
+    {x:500, y:130},
+    {x:130, y:160},
+    {x:670, y:160},
+  ];
+
+  sorted.forEach(function(b, i) {
+    var r = 20 + b.count * 8;
+    var pos = positions[i];
+    var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    g.style.cursor = "pointer";
+
+    var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", pos.x);
+    circle.setAttribute("cy", pos.y);
+    circle.setAttribute("r", r);
+    circle.setAttribute("fill", b.color);
+    circle.setAttribute("opacity", "0.8");
+    circle.style.transition = "r 0.2s, opacity 0.2s";
+    g.appendChild(circle);
+
+    var lines = b.name.split("\n");
+    lines.forEach(function(line, li) {
+      var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", pos.x);
+      text.setAttribute("y", pos.y + (li - (lines.length-1)/2) * 14);
+      text.setAttribute("text-anchor", "middle");
+      text.setAttribute("dominant-baseline", "central");
+      text.setAttribute("font-size", r > 50 ? "12px" : "10px");
+      text.setAttribute("font-weight", "500");
+      text.setAttribute("fill", "white");
+      text.setAttribute("pointer-events", "none");
+      text.textContent = line;
+      g.appendChild(text);
+    });
+
+    var countText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    countText.setAttribute("x", pos.x);
+    countText.setAttribute("y", pos.y + (lines.length-1)/2 * 14 + 16);
+    countText.setAttribute("text-anchor", "middle");
+    countText.setAttribute("font-size", "10px");
+    countText.setAttribute("fill", "rgba(255,255,255,0.7)");
+    countText.setAttribute("pointer-events", "none");
+    countText.textContent = b.count + "/8";
+    g.appendChild(countText);
+
+    g.addEventListener("mouseenter", function(e) {
+      circle.setAttribute("opacity", "1");
+      circle.setAttribute("r", r + 4);
+      showTT(e, "<strong>" + b.name.replace("\n"," ") + "</strong><br>" + b.count + " of 8 participants<br>" + b.total + " total mentions<br><em>Click to explore</em>");
+    });
+    g.addEventListener("mousemove", moveTT);
+    g.addEventListener("mouseleave", function() {
+      circle.setAttribute("opacity", "0.8");
+      circle.setAttribute("r", r);
+      hideTT();
+    });
+    g.addEventListener("click", function() {
+      if (b.link !== "#") window.location.href = b.link;
+    });
+
+    svg.appendChild(g);
+  });
+})();
+
+/* ============================================
+   OPTION B: NESTED PROPORTIONAL AREA
+   ============================================ */
+(function() {
+  var svg = document.getElementById("nested");
+  var cx = 300, cy = 300;
+  var maxR = 250;
+
+  var sorted = barriers.slice().sort(function(a,b) { return b.count - a.count; });
+
+  sorted.forEach(function(b, i) {
+    var r = maxR - i * 25;
+    if (r < 30) r = 30;
+
+    var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", cx);
+    circle.setAttribute("cy", cy);
+    circle.setAttribute("r", r);
+    circle.setAttribute("fill", b.color);
+    circle.setAttribute("opacity", "0.15");
+    circle.setAttribute("stroke", b.color);
+    circle.setAttribute("stroke-width", "2");
+    circle.style.cursor = "pointer";
+    circle.style.transition = "opacity 0.2s";
+
+    circle.addEventListener("mouseenter", function(e) {
+      circle.setAttribute("opacity", "0.35");
+      showTT(e, "<strong>" + b.name.replace("\n"," ") + "</strong><br>" + b.count + " of 8 participants<br>" + b.total + " total mentions<br><em>Click to explore</em>");
+    });
+    circle.addEventListener("mousemove", moveTT);
+    circle.addEventListener("mouseleave", function() {
+      circle.setAttribute("opacity", "0.15");
+      hideTT();
+    });
+    circle.addEventListener("click", function() {
+      if (b.link !== "#") window.location.href = b.link;
+    });
+
+    svg.appendChild(circle);
+
+    var labelY = cy - r + 16;
+    if (i > 0 && labelY < cy - (maxR - (i-1)*25) + 30) labelY = cy - r + 16;
+
+    var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", cx);
+    text.setAttribute("y", labelY);
+    text.setAttribute("text-anchor", "middle");
+    text.setAttribute("font-size", "11px");
+    text.setAttribute("font-weight", "500");
+    text.setAttribute("fill", b.color);
+    text.setAttribute("pointer-events", "none");
+    text.textContent = b.name.replace("\n"," ") + " (" + b.count + "/8)";
+    svg.appendChild(text);
+  });
+})();
+
+/* ============================================
+   OPTION C: RADIAL BAR CHART
+   ============================================ */
+(function() {
+  var svg = document.getElementById("radial");
+  var cx = 300, cy = 300;
+  var innerR = 80, maxR = 260;
+  var n = barriers.length;
+
+  var angleStep = (Math.PI * 2) / n;
+  var gapAngle = 0.03;
+
+  barriers.forEach(function(b, i) {
+    var startAngle = i * angleStep - Math.PI/2 + gapAngle;
+    var endAngle = (i+1) * angleStep - Math.PI/2 - gapAngle;
+    var barR = innerR + (maxR - innerR) * (b.count / 8);
+
+    var x1i = cx + innerR * Math.cos(startAngle);
+    var y1i = cy + innerR * Math.sin(startAngle);
+    var x2i = cx + innerR * Math.cos(endAngle);
+    var y2i = cy + innerR * Math.sin(endAngle);
+    var x1o = cx + barR * Math.cos(startAngle);
+    var y1o = cy + barR * Math.sin(startAngle);
+    var x2o = cx + barR * Math.cos(endAngle);
+    var y2o = cy + barR * Math.sin(endAngle);
+
+    var largeArc = (endAngle - startAngle > Math.PI) ? 1 : 0;
+
+    var d = "M " + x1i + " " + y1i +
+            " L " + x1o + " " + y1o +
+            " A " + barR + " " + barR + " 0 " + largeArc + " 1 " + x2o + " " + y2o +
+            " L " + x2i + " " + y2i +
+            " A " + innerR + " " + innerR + " 0 " + largeArc + " 0 " + x1i + " " + y1i +
+            " Z";
+
+    var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", d);
+    path.setAttribute("fill", b.color);
+    path.setAttribute("opacity", "0.75");
+    path.style.cursor = "pointer";
+    path.style.transition = "opacity 0.2s";
+
+    path.addEventListener("mouseenter", function(e) {
+      path.setAttribute("opacity", "1");
+      showTT(e, "<strong>" + b.name.replace("\n"," ") + "</strong><br>" + b.count + " of 8 participants<br>" + b.total + " total mentions<br><em>Click to explore</em>");
+    });
+    path.addEventListener("mousemove", moveTT);
+    path.addEventListener("mouseleave", function() {
+      path.setAttribute("opacity", "0.75");
+      hideTT();
+    });
+    path.addEventListener("click", function() {
+      if (b.link !== "#") window.location.href = b.link;
+    });
+
+    svg.appendChild(path);
+
+    var midAngle = (startAngle + endAngle) / 2;
+    var labelR = barR + 18;
+    var lx = cx + labelR * Math.cos(midAngle);
+    var ly = cy + labelR * Math.sin(midAngle);
+
+    var anchor = (midAngle > Math.PI/2 && midAngle < Math.PI*1.5) ? "end" : "start";
+    if (Math.abs(midAngle + Math.PI/2) < 0.3 || Math.abs(midAngle - Math.PI/2) < 0.3) anchor = "middle";
+
+    var lines = b.name.split("\n");
+    lines.forEach(function(line, li) {
+      var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      text.setAttribute("x", lx);
+      text.setAttribute("y", ly + li * 13);
+      text.setAttribute("text-anchor", anchor);
+      text.setAttribute("font-size", "11px");
+      text.setAttribute("font-weight", "500");
+      text.setAttribute("fill", "#2c2c2a");
+      text.textContent = line;
+      svg.appendChild(text);
+    });
+  });
+
+  var centerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+  centerCircle.setAttribute("cx", cx);
+  centerCircle.setAttribute("cy", cy);
+  centerCircle.setAttribute("r", innerR - 2);
+  centerCircle.setAttribute("fill", "#fafaf8");
+  svg.appendChild(centerCircle);
+
+  var centerText1 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  centerText1.setAttribute("x", cx);
+  centerText1.setAttribute("y", cy - 8);
+  centerText1.setAttribute("text-anchor", "middle");
+  centerText1.setAttribute("font-size", "11px");
+  centerText1.setAttribute("fill", "#888");
+  centerText1.textContent = "Common";
+  svg.appendChild(centerText1);
+
+  var centerText2 = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  centerText2.setAttribute("x", cx);
+  centerText2.setAttribute("y", cy + 10);
+  centerText2.setAttribute("text-anchor", "middle");
+  centerText2.setAttribute("font-size", "11px");
+  centerText2.setAttribute("fill", "#888");
+  centerText2.textContent = "barriers";
+  svg.appendChild(centerText2);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time budget — find your gym time</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fafaf8; color:#2c2c2a; }
+  .container { max-width:900px; margin:0 auto; padding:2rem; }
+  h1 { font-size:1.5rem; font-weight:500; margin-bottom:4px; }
+  .subtitle { font-size:0.85rem; color:#888; margin-bottom:2rem; }
+  .layout { display:flex; gap:2.5rem; align-items:flex-start; flex-wrap:wrap; }
+  .clock-panel { flex:1; min-width:320px; display:flex; flex-direction:column; align-items:center; }
+  .controls-panel { flex:1; min-width:300px; }
+  .slider-group { margin-bottom:14px; }
+  .slider-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
+  .slider-label { font-size:0.82rem; font-weight:500; display:flex; align-items:center; gap:6px; }
+  .slider-value { font-size:0.82rem; color:#888; min-width:40px; text-align:right; }
+  .color-dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  input[type=range] { width:100%; height:6px; -webkit-appearance:none; appearance:none; background:#e8e7e2; border-radius:3px; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:18px; height:18px; border-radius:50%; background:white; border:2px solid #888; cursor:pointer; }
+  input[type=range]::-moz-range-thumb { width:18px; height:18px; border-radius:50%; background:white; border:2px solid #888; cursor:pointer; }
+  .result-card { margin-top:1.5rem; padding:16px 20px; background:white; border-radius:10px; border:1px solid #e8e7e2; }
+  .result-title { font-size:0.8rem; color:#888; margin-bottom:4px; }
+  .result-value { font-size:2rem; font-weight:500; }
+  .result-sub { font-size:0.8rem; color:#888; margin-top:4px; line-height:1.5; }
+  .result-positive { color:#1D9E75; }
+  .result-tight { color:#BA7517; }
+  .result-negative { color:#E24B4A; }
+  .insight-card { margin-top:12px; padding:14px 18px; background:#E6F1FB; border-radius:8px; font-size:0.82rem; line-height:1.6; color:#0C447C; }
+  .insight-card.warning { background:#FAEEDA; color:#633806; }
+  .insight-card.success { background:#EAF3DE; color:#27500A; }
+  .compare-section { margin-top:1.5rem; }
+  .compare-title { font-size:0.82rem; font-weight:500; margin-bottom:8px; }
+  .compare-bar { display:flex; height:24px; border-radius:6px; overflow:hidden; margin-bottom:6px; }
+  .compare-label { font-size:0.72rem; color:#888; margin-bottom:12px; }
+  .reset-btn { margin-top:12px; padding:8px 16px; font-size:0.8rem; background:white; border:1px solid #d3d1c7;
+    border-radius:6px; cursor:pointer; color:#888; }
+  .reset-btn:hover { background:#f5f4f0; color:#2c2c2a; }
+  svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Where does your time go?</h1>
+  <p class="subtitle">Adjust the sliders to match your typical weekday. The clock shows how your 24 hours are spent — and reveals your available gym time.</p>
+
+  <div class="layout">
+    <div class="clock-panel">
+      <svg id="clock" width="340" height="340" viewBox="0 0 340 340"></svg>
+      <div class="result-card">
+        <div class="result-title">Your available time</div>
+        <div class="result-value" id="availTime">—</div>
+        <div class="result-sub" id="availSub"></div>
+      </div>
+      <div id="insightCard" class="insight-card" style="display:none"></div>
+    </div>
+
+    <div class="controls-panel">
+      <div id="sliders"></div>
+      <button class="reset-btn" onclick="resetSliders()">Reset to defaults</button>
+
+      <div class="compare-section">
+        <div class="compare-title">How interview participants spent their time</div>
+        <div id="compareBars"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+var categories = [
+  { id:"sleep",    label:"Sleep",              color:"#534AB7", default:8,  max:12 },
+  { id:"work",     label:"Work / school",      color:"#378ADD", default:8,  max:14 },
+  { id:"commute",  label:"Commute",            color:"#85B7EB", default:1,  max:4  },
+  { id:"cooking",  label:"Cooking / eating",   color:"#EF9F27", default:1.5,max:4  },
+  { id:"chores",   label:"Chores / errands",   color:"#BA7517", default:1,  max:4  },
+  { id:"social",   label:"Social media",       color:"#D4537E", default:2,  max:8  },
+  { id:"tv",       label:"TV / entertainment", color:"#ED93B1", default:1,  max:6  },
+  { id:"socialize",label:"Socializing",        color:"#1D9E75", default:0.5,max:4  },
+  { id:"other",    label:"Other",              color:"#888780", default:0.5,max:4  },
+];
+
+var cx = 170, cy = 170, outerR = 145, innerR = 85, textR = 115;
+
+function buildSliders() {
+  var container = document.getElementById("sliders");
+  var html = "";
+  categories.forEach(function(cat) {
+    html += '<div class="slider-group">' +
+      '<div class="slider-header">' +
+      '<span class="slider-label"><span class="color-dot" style="background:' + cat.color + '"></span>' + cat.label + '</span>' +
+      '<span class="slider-value" id="val_' + cat.id + '">' + cat.default + 'h</span>' +
+      '</div>' +
+      '<input type="range" id="sl_' + cat.id + '" min="0" max="' + (cat.max * 2) + '" value="' + (cat.default * 2) + '" step="1" oninput="update()">' +
+      '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function getValues() {
+  var vals = {};
+  var total = 0;
+  categories.forEach(function(cat) {
+    var v = document.getElementById("sl_" + cat.id).value / 2;
+    vals[cat.id] = v;
+    total += v;
+  });
+  vals._total = total;
+  vals._free = Math.max(0, 24 - total);
+  return vals;
+}
+
+function drawClock(vals) {
+  var svg = document.getElementById("clock");
+  var html = "";
+
+  var startAngle = -Math.PI / 2;
+  var segments = [];
+
+  categories.forEach(function(cat) {
+    var hours = vals[cat.id];
+    if (hours > 0) {
+      var sweep = (hours / 24) * Math.PI * 2;
+      segments.push({ id:cat.id, label:cat.label, color:cat.color, hours:hours, start:startAngle, end:startAngle + sweep });
+      startAngle += sweep;
+    }
+  });
+
+  var freeHours = vals._free;
+  if (freeHours > 0) {
+    var sweep = (freeHours / 24) * Math.PI * 2;
+    segments.push({ id:"free", label:"Available", color:"#C0DD97", hours:freeHours, start:startAngle, end:startAngle + sweep });
+  }
+
+  segments.forEach(function(seg) {
+    var large = (seg.end - seg.start) > Math.PI ? 1 : 0;
+    var x1 = cx + outerR * Math.cos(seg.start);
+    var y1 = cy + outerR * Math.sin(seg.start);
+    var x2 = cx + outerR * Math.cos(seg.end);
+    var y2 = cy + outerR * Math.sin(seg.end);
+    var x3 = cx + innerR * Math.cos(seg.end);
+    var y3 = cy + innerR * Math.sin(seg.end);
+    var x4 = cx + innerR * Math.cos(seg.start);
+    var y4 = cy + innerR * Math.sin(seg.start);
+
+    var d = "M " + x1 + " " + y1 +
+            " A " + outerR + " " + outerR + " 0 " + large + " 1 " + x2 + " " + y2 +
+            " L " + x3 + " " + y3 +
+            " A " + innerR + " " + innerR + " 0 " + large + " 0 " + x4 + " " + y4 +
+            " Z";
+
+    html += '<path d="' + d + '" fill="' + seg.color + '" stroke="white" stroke-width="1.5" opacity="0.85">';
+    html += '<title>' + seg.label + ': ' + seg.hours.toFixed(1) + 'h</title></path>';
+
+    if (seg.hours >= 1.2) {
+      var midAngle = (seg.start + seg.end) / 2;
+      var tx = cx + textR * Math.cos(midAngle);
+      var ty = cy + textR * Math.sin(midAngle);
+      var fontSize = seg.hours >= 2.5 ? 11 : 10;
+      html += '<text x="' + tx + '" y="' + ty + '" text-anchor="middle" dominant-baseline="central" ' +
+              'font-size="' + fontSize + 'px" fill="white" font-weight="500">' +
+              seg.hours.toFixed(1) + 'h</text>';
+    }
+  });
+
+  html += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (innerR - 2) + '" fill="#fafaf8"/>';
+
+  var freeText = freeHours >= 0 ? freeHours.toFixed(1) + "h" : "Over!";
+  var freeColor = freeHours >= 1.5 ? "#27500A" : freeHours >= 0.5 ? "#633806" : "#791F1F";
+  html += '<text x="' + cx + '" y="' + (cy - 12) + '" text-anchor="middle" font-size="11px" fill="#888">Available</text>';
+  html += '<text x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle" font-size="28px" font-weight="500" fill="' + freeColor + '">' + freeText + '</text>';
+
+  html += '<text x="' + cx + '" y="' + (cy + 34) + '" text-anchor="middle" font-size="10px" fill="#b4b2a9">of 24 hours</text>';
+
+  svg.innerHTML = html;
+}
+
+function updateResults(vals) {
+  var free = vals._free;
+  var el = document.getElementById("availTime");
+  var sub = document.getElementById("availSub");
+  var insight = document.getElementById("insightCard");
+
+  if (free >= 1.5) {
+    el.textContent = free.toFixed(1) + " hours";
+    el.className = "result-value result-positive";
+    sub.innerHTML = "That's enough for a <strong>45-60 min gym session</strong> plus travel time.";
+    insight.className = "insight-card success";
+    insight.style.display = "block";
+
+    var socialHours = vals.social;
+    if (socialHours >= 2) {
+      insight.innerHTML = "You spend <strong>" + socialHours.toFixed(1) + " hours</strong> on social media daily. " +
+        "Our research found that 100% of interview participants mentioned social media's impact on their self-image, " +
+        "yet the time spent scrolling could cover a full workout. " +
+        "Even reallocating 30 minutes would give you a solid gym session.";
+    } else {
+      insight.innerHTML = "You have a healthy time balance. A typical gym session (including travel and changing) " +
+        "takes about 60-90 minutes. You have room for that and more. " +
+        "5 of our 8 interview participants named time as their biggest barrier — but when we broke down their days, most had 1-2 hours available.";
+    }
+  } else if (free >= 0.5) {
+    el.textContent = free.toFixed(1) + " hours";
+    el.className = "result-value result-tight";
+    sub.innerHTML = "Tight, but a <strong>30-minute express workout</strong> could still fit.";
+    insight.className = "insight-card warning";
+    insight.style.display = "block";
+
+    var biggest = findBiggestLeisure(vals);
+    insight.innerHTML = "Your schedule is packed, but not impossible. Your largest flexible category is <strong>" +
+      biggest.label + " (" + biggest.hours.toFixed(1) + "h)</strong>. " +
+      "Reallocating just 30 minutes would open up enough time for a focused workout. " +
+      "Research shows even 20-minute high-intensity sessions deliver significant health benefits.";
+  } else {
+    el.textContent = free.toFixed(1) + " hours";
+    el.className = "result-value result-negative";
+    sub.innerHTML = "Your day is overbooked — you've allocated more than 24 hours.";
+    insight.className = "insight-card warning";
+    insight.style.display = "block";
+    insight.innerHTML = "Your allocations add up to <strong>" + vals._total.toFixed(1) + " hours</strong> — more than a day has. " +
+      "Try adjusting your estimates. Most people overestimate time spent on obligations and underestimate leisure time. " +
+      "In our interviews, participants who said they had 'no time' often discovered 1-2 hours of unstructured time when they tracked their day.";
+  }
+}
+
+function findBiggestLeisure(vals) {
+  var leisure = [
+    { id:"social", label:"Social media", hours:vals.social },
+    { id:"tv", label:"TV / entertainment", hours:vals.tv },
+    { id:"socialize", label:"Socializing", hours:vals.socialize },
+    { id:"other", label:"Other", hours:vals.other },
+  ];
+  leisure.sort(function(a,b) { return b.hours - a.hours; });
+  return leisure[0];
+}
+
+function buildComparisons() {
+  var participants = [
+    { name:"Participant A", data:{sleep:7,work:9,commute:1,cooking:1,chores:1,social:4,tv:0.5,socialize:0.5,other:0} },
+    { name:"Participant B", data:{sleep:8,work:8,commute:1.5,cooking:1,chores:0.5,social:2,tv:1,socialize:1,other:0.5} },
+    { name:"Participant C", data:{sleep:7.5,work:8,commute:0.5,cooking:1.5,chores:1,social:3,tv:1.5,socialize:0.5,other:0.5} },
+  ];
+
+  var container = document.getElementById("compareBars");
+  var html = "";
+
+  participants.forEach(function(p) {
+    var total = 0;
+    html += '<div class="compare-bar">';
+    categories.forEach(function(cat) {
+      var h = p.data[cat.id] || 0;
+      total += h;
+      var pct = (h / 24) * 100;
+      if (pct > 0) {
+        html += '<div style="width:' + pct + '%;background:' + cat.color + ';opacity:0.7" title="' + cat.label + ': ' + h + 'h"></div>';
+      }
+    });
+    var free = 24 - total;
+    var freePct = (free / 24) * 100;
+    html += '<div style="width:' + freePct + '%;background:#C0DD97;opacity:0.7" title="Available: ' + free.toFixed(1) + 'h"></div>';
+    html += '</div>';
+    html += '<div class="compare-label">' + p.name + ' — <strong>' + free.toFixed(1) + 'h available</strong></div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function update() {
+  categories.forEach(function(cat) {
+    var v = document.getElementById("sl_" + cat.id).value / 2;
+    document.getElementById("val_" + cat.id).textContent = v.toFixed(1) + "h";
+  });
+  var vals = getValues();
+  drawClock(vals);
+  updateResults(vals);
+}
+
+function resetSliders() {
+  categories.forEach(function(cat) {
+    document.getElementById("sl_" + cat.id).value = cat.default * 2;
+  });
+  update();
+}
+
+buildSliders();
+buildComparisons();
+update();
+</script>
+</body>
+</html>

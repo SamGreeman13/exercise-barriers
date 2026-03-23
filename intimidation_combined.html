@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The intimidation paradox</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fafaf8; color:#2c2c2a; }
+  .page { max-width:900px; margin:0 auto; padding:2rem; }
+  h1 { font-size:1.6rem; font-weight:500; text-align:center; margin-bottom:4px; }
+  .subtitle { font-size:0.85rem; color:#888; text-align:center; margin-bottom:2rem; line-height:1.6; }
+
+  /* Toggle switch */
+  .toggle-switch { display:flex; justify-content:center; gap:0; margin-bottom:2rem; }
+  .toggle-btn { padding:12px 28px; font-size:0.85rem; font-weight:500; cursor:pointer;
+    border:2px solid #d3d1c7; background:white; color:#888; transition:all 0.25s; }
+  .toggle-btn:first-child { border-radius:8px 0 0 8px; border-right:1px solid #d3d1c7; }
+  .toggle-btn:last-child { border-radius:0 8px 8px 0; border-left:1px solid #d3d1c7; }
+  .toggle-btn.active-fear { background:#FCEBEB; color:#791F1F; border-color:#E24B4A; }
+  .toggle-btn.active-both { background:linear-gradient(90deg, #FCEBEB 0%, #EAF3DE 100%);
+    color:#2c2c2a; border-color:#888; }
+  .toggle-btn.active-social { background:#EAF3DE; color:#27500A; border-color:#1D9E75; }
+
+  /* Panels */
+  .panel { display:none; }
+  .panel.active { display:block; animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+  /* Grid of quote cards */
+  .quote-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .quote-card { padding:16px 18px; border-radius:10px; font-size:0.78rem; line-height:1.6; }
+  .quote-card.fear { background:#FCEBEB; color:#791F1F; }
+  .quote-card.social { background:#EAF3DE; color:#27500A; }
+  .quote-card-text { font-style:italic; }
+  .quote-card-attr { margin-top:8px; font-size:0.7rem; font-weight:500; font-style:normal; opacity:0.7; }
+
+  /* Paired cards */
+  .paired-cards { display:flex; flex-direction:column; gap:14px; }
+  .paired-card { display:flex; border-radius:12px; overflow:hidden; border:1px solid #e8e7e2; }
+  .paired-left { flex:1; padding:16px 18px; background:#FCEBEB; }
+  .paired-right { flex:1; padding:16px 18px; background:#EAF3DE; }
+  .paired-name { font-size:0.78rem; font-weight:600; margin-bottom:6px; }
+  .paired-left .paired-name { color:#791F1F; }
+  .paired-right .paired-name { color:#27500A; }
+  .paired-quote { font-size:0.76rem; font-style:italic; line-height:1.6; }
+  .paired-left .paired-quote { color:#A32D2D; }
+  .paired-right .paired-quote { color:#3B6D11; }
+  .paired-source { font-size:0.66rem; margin-top:6px; font-style:normal; opacity:0.6; }
+  .paired-arrow { display:flex; align-items:center; justify-content:center; width:44px; min-width:44px;
+    background:white; font-size:1.4rem; color:#b4b2a9; }
+  .paired-header { display:flex; margin-bottom:12px; border-radius:8px; overflow:hidden; }
+  .paired-header-left { flex:1; text-align:center; font-size:0.8rem; font-weight:500; color:#791F1F;
+    padding:10px; background:#FCEBEB; }
+  .paired-header-right { flex:1; text-align:center; font-size:0.8rem; font-weight:500; color:#27500A;
+    padding:10px; background:#EAF3DE; }
+  .paired-header-mid { width:44px; min-width:44px; background:#fafaf8; }
+
+  /* Summary stat */
+  .summary { text-align:center; margin-top:1.5rem; padding:18px 24px; border-radius:10px;
+    font-size:0.85rem; line-height:1.6; }
+  .summary.fear { background:#FCEBEB; color:#791F1F; }
+  .summary.social { background:#EAF3DE; color:#27500A; }
+  .summary.both { background:linear-gradient(90deg, #FCEBEB 0%, #EAF3DE 100%); color:#2c2c2a; }
+  .summary-stat { font-size:2rem; font-weight:500; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<h1>The intimidation paradox</h1>
+<p class="subtitle">The people who fear going to the gym alone are the same people who thrive in social exercise settings.<br>The barrier and the solution are two sides of the same coin.</p>
+
+<div class="toggle-switch">
+  <div class="toggle-btn active-fear" id="btnFear" onclick="showPanel('fear')">Going alone</div>
+  <div class="toggle-btn" id="btnBoth" onclick="showPanel('both')">Same person, both sides</div>
+  <div class="toggle-btn" id="btnSocial" onclick="showPanel('social')">Going with others</div>
+</div>
+
+<!-- PANEL 1: Fear / going alone -->
+<div class="panel active" id="panelFear">
+  <div class="quote-grid">
+    <div class="quote-card fear">
+      <div class="quote-card-text">"I avoided physical activity because I thought people would know I didn't know what I was doing."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 1</div>
+    </div>
+    <div class="quote-card fear">
+      <div class="quote-card-text">"Gyms are catered more towards men. I wouldn't be very confident knowing where to start or what to do."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 2</div>
+    </div>
+    <div class="quote-card fear">
+      <div class="quote-card-text">"Gyms are catered towards men, based on the environment. My confidence is a 6 out of 10."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 3</div>
+    </div>
+    <div class="quote-card fear">
+      <div class="quote-card-text">"I go alone because nobody I know has a membership to my gym — but I would enjoy going with others."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 1</div>
+    </div>
+    <div class="quote-card fear">
+      <div class="quote-card-text">"I avoided activities when I was self-conscious about my weight and body image."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 7</div>
+    </div>
+    <div class="quote-card fear">
+      <div class="quote-card-text">"Gyms cater to people who are already motivated, using tactics like expensive training programs to attract customers."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 7</div>
+    </div>
+  </div>
+  <div class="summary fear">
+    <div class="summary-stat">5 of 8</div>
+    participants felt gyms are designed for certain types of people — not them
+  </div>
+</div>
+
+<!-- PANEL 2: Paired / both sides -->
+<div class="panel" id="panelBoth">
+  <div class="paired-header">
+    <div class="paired-header-left">The fear</div>
+    <div class="paired-header-mid"></div>
+    <div class="paired-header-right">The solution</div>
+  </div>
+  <div class="paired-cards">
+
+    <div class="paired-card">
+      <div class="paired-left">
+        <div class="paired-name">Interviewee 1</div>
+        <div class="paired-quote">"I avoided physical activity because I thought people would know I didn't know what I was doing."</div>
+        <div class="paired-source">On gym intimidation</div>
+      </div>
+      <div class="paired-arrow">&rarr;</div>
+      <div class="paired-right">
+        <div class="paired-name">Interviewee 1</div>
+        <div class="paired-quote">"I was in cross country, track, and dance — I realized I love structured classes. I prefer exercising with friends."</div>
+        <div class="paired-source">On what works for her</div>
+      </div>
+    </div>
+
+    <div class="paired-card">
+      <div class="paired-left">
+        <div class="paired-name">Interviewee 2</div>
+        <div class="paired-quote">"Gyms are catered more towards men. I wouldn't be very confident knowing where to start or what to do."</div>
+        <div class="paired-source">On gym environment</div>
+      </div>
+      <div class="paired-arrow">&rarr;</div>
+      <div class="paired-right">
+        <div class="paired-name">Interviewee 2</div>
+        <div class="paired-quote">"I prefer group fitness classes because it pushes me the most and I enjoy being around people. Sports taught me determination and balance."</div>
+        <div class="paired-source">On what works for them</div>
+      </div>
+    </div>
+
+    <div class="paired-card">
+      <div class="paired-left">
+        <div class="paired-name">Interviewee 3</div>
+        <div class="paired-quote">"Gyms are catered towards men. My confidence is a 6 out of 10."</div>
+        <div class="paired-source">On gym environment</div>
+      </div>
+      <div class="paired-arrow">&rarr;</div>
+      <div class="paired-right">
+        <div class="paired-name">Interviewee 3</div>
+        <div class="paired-quote">"I prefer group fitness classes. Having a support system and a buddy helps with accountability."</div>
+        <div class="paired-source">On what works for them</div>
+      </div>
+    </div>
+
+    <div class="paired-card">
+      <div class="paired-left">
+        <div class="paired-name">Interviewee 7</div>
+        <div class="paired-quote">"I avoided activities when I was self-conscious about my weight. Gyms cater to people who are already motivated."</div>
+        <div class="paired-source">On gym intimidation</div>
+      </div>
+      <div class="paired-arrow">&rarr;</div>
+      <div class="paired-right">
+        <div class="paired-name">Interviewee 7</div>
+        <div class="paired-quote">"Wrestling taught me about healthy living. I enjoy the camaraderie of exercising with a team — everyone motivated to be their best."</div>
+        <div class="paired-source">On what works for him</div>
+      </div>
+    </div>
+
+    <div class="paired-card">
+      <div class="paired-left">
+        <div class="paired-name">Interviewee 6</div>
+        <div class="paired-quote">"I'd want someone to work out with and keep me accountable. A gym close to me, within a 15-20 minute walk."</div>
+        <div class="paired-source">On what they need</div>
+      </div>
+      <div class="paired-arrow">&rarr;</div>
+      <div class="paired-right">
+        <div class="paired-name">Interviewee 6</div>
+        <div class="paired-quote">"I prefer group fitness classes — it's more enjoyable when everyone is working together. Sports taught me exercise is about hanging out with friends."</div>
+        <div class="paired-source">On what works for them</div>
+      </div>
+    </div>
+
+  </div>
+  <div class="summary both">
+    <div class="summary-stat">100%</div>
+    of participants who felt intimidated preferred social or group exercise settings
+  </div>
+</div>
+
+<!-- PANEL 3: Social / going with others -->
+<div class="panel" id="panelSocial">
+  <div class="quote-grid">
+    <div class="quote-card social">
+      <div class="quote-card-text">"I was in cross country, track, and dance — I realized I love structured classes. I prefer exercising with friends."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 1</div>
+    </div>
+    <div class="quote-card social">
+      <div class="quote-card-text">"I prefer group fitness classes because it pushes me the most and I enjoy being around people."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 2</div>
+    </div>
+    <div class="quote-card social">
+      <div class="quote-card-text">"I prefer group fitness classes. Having a support system and a buddy helps with accountability."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 3</div>
+    </div>
+    <div class="quote-card social">
+      <div class="quote-card-text">"Wrestling taught me about healthy living. I enjoy the camaraderie of exercising with a team."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 7</div>
+    </div>
+    <div class="quote-card social">
+      <div class="quote-card-text">"Group fitness classes are more enjoyable when everyone is working together on the same activity."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 6</div>
+    </div>
+    <div class="quote-card social">
+      <div class="quote-card-text">"Sports motivated me to recreate the fun experiences and feelings from my youth."</div>
+      <div class="quote-card-attr">&mdash; Interviewee 4</div>
+    </div>
+  </div>
+  <div class="summary social">
+    <div class="summary-stat">6 of 8</div>
+    participants preferred group classes, exercising with friends, or team sports
+  </div>
+</div>
+
+</div>
+
+<script>
+function showPanel(which) {
+  document.getElementById("panelFear").classList.remove("active");
+  document.getElementById("panelBoth").classList.remove("active");
+  document.getElementById("panelSocial").classList.remove("active");
+  document.getElementById("btnFear").className = "toggle-btn";
+  document.getElementById("btnBoth").className = "toggle-btn";
+  document.getElementById("btnSocial").className = "toggle-btn";
+
+  if (which === "fear") {
+    document.getElementById("panelFear").classList.add("active");
+    document.getElementById("btnFear").className = "toggle-btn active-fear";
+  } else if (which === "both") {
+    document.getElementById("panelBoth").classList.add("active");
+    document.getElementById("btnBoth").className = "toggle-btn active-both";
+  } else {
+    document.getElementById("panelSocial").classList.add("active");
+    document.getElementById("btnSocial").className = "toggle-btn active-social";
+  }
+}
+</script>
+</body>
+</html>
