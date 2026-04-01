@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Where does your energy go?</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fafaf8; color:#2c2c2a; }
+  .ctn { max-width:1100px; margin:0 auto; padding:1.5rem; }
+  h1 { font-size:1.5rem; font-weight:500; margin-bottom:4px; }
+  .sub { font-size:0.85rem; color:#888; margin-bottom:1rem; line-height:1.6; }
+  .info-tog { font-size:0.78rem; color:#0C447C; cursor:pointer; text-decoration:underline; margin-bottom:1rem; display:inline-block; }
+  .info-p { display:none; background:#fff; border:1px solid #e8e7e2; border-radius:10px; padding:16px 20px; margin-bottom:1.5rem; font-size:0.8rem; line-height:1.7; color:#444; }
+  .info-p.open { display:block; }
+  .info-p h3 { font-size:0.85rem; font-weight:500; color:#2c2c2a; margin:10px 0 4px; }
+  .info-p h3:first-child { margin-top:0; }
+  .info-p table { width:100%; border-collapse:collapse; margin:8px 0; font-size:0.75rem; }
+  .info-p th { text-align:left; border-bottom:2px solid #e8e7e2; padding:4px 8px; color:#888; font-weight:500; }
+  .info-p td { border-bottom:1px solid #e8e7e2; padding:4px 8px; }
+  .info-p .tot td { font-weight:500; border-top:2px solid #2c2c2a; }
+  .lay { display:flex; gap:1.5rem; flex-wrap:wrap; }
+  .cp { flex:0 0 310px; }
+  .chp { flex:1; min-width:440px; }
+  .sl { font-size:0.7rem; font-weight:500; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin:12px 0 6px; }
+  .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .fb { margin-bottom:8px; padding:8px 12px; background:#fff; border-radius:8px; border:1px solid #e8e7e2; }
+  .fb-h { display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; }
+  .fb-l { font-size:0.78rem; font-weight:500; display:flex; align-items:center; gap:6px; }
+  .fb-m { font-size:0.68rem; color:#888; }
+  .tr { display:flex; align-items:center; gap:6px; font-size:0.72rem; }
+  .tr select { padding:3px 5px; border:1px solid #d3d1c7; border-radius:4px; font-size:0.72rem; background:#fff; }
+  .fi { padding:7px 10px; border-radius:7px; font-size:0.74rem; font-weight:500; display:flex; align-items:center; justify-content:space-between; cursor:grab; user-select:none; margin-bottom:5px; }
+  .fi:active { cursor:grabbing; opacity:0.8; }
+  .fi-l { display:flex; align-items:center; gap:6px; }
+  .fi-mb { font-size:0.62rem; opacity:0.5; font-weight:400; }
+  .fi-sw { display:flex; align-items:center; gap:4px; }
+  .fi-sw input[type=range] { width:70px; }
+  .fi-v { font-size:0.68rem; width:28px; text-align:right; opacity:0.6; }
+  .bc { padding:8px 12px; background:#fff; border-radius:8px; border:1px solid #e8e7e2; margin-bottom:8px; }
+  .bc-h { display:flex; justify-content:space-between; font-size:0.78rem; font-weight:500; margin-bottom:3px; }
+  .bc-lb { display:flex; justify-content:space-between; font-size:0.62rem; color:#888; }
+  input[type=range] { height:4px; -webkit-appearance:none; appearance:none; background:#e8e7e2; border-radius:3px; outline:none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid #888; cursor:pointer; }
+  .sc { padding:8px 12px; background:#fff; border-radius:8px; border:1px solid #e8e7e2; margin-bottom:6px; }
+  .sc-h { display:flex; justify-content:space-between; font-size:0.76rem; font-weight:500; margin-bottom:3px; }
+  .sb { height:8px; border-radius:4px; background:#e8e7e2; overflow:hidden; }
+  .sf { height:100%; border-radius:4px; transition:width 0.3s; }
+  .sm { font-size:0.7rem; margin-top:4px; line-height:1.4; }
+  .eb { padding:10px 12px; background:#fff; border-radius:8px; border:2px dashed #1D9E75; margin-top:6px; }
+  .eb-t { font-size:0.78rem; font-weight:500; color:#1D9E75; margin-bottom:3px; }
+  .eb-s { font-size:1.2rem; font-weight:500; color:#1D9E75; }
+  .eb-x { font-size:0.74rem; color:#666; line-height:1.5; margin-top:3px; }
+  .cw { background:#fff; border-radius:10px; border:1px solid #e8e7e2; padding:14px; position:relative; }
+  .ct { font-size:0.85rem; font-weight:500; margin-bottom:2px; }
+  .cs { font-size:0.72rem; color:#888; margin-bottom:8px; }
+  #cv { width:100%; cursor:default; }
+  .lr { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+  .li { display:flex; align-items:center; gap:4px; font-size:0.68rem; color:#666; }
+  .ls { width:10px; height:10px; border-radius:3px; display:inline-block; }
+  .ins { margin-top:10px; padding:12px 14px; border-radius:8px; font-size:0.78rem; line-height:1.6; }
+  .ins.pos { background:#EAF3DE; color:#27500A; }
+  .ins.wrn { background:#FAEEDA; color:#633806; }
+  .ins.neg { background:#FCEBEB; color:#791F1F; }
+  .dh { position:absolute; background:rgba(29,158,117,0.12); border:2px dashed #1D9E75; border-radius:4px; pointer-events:none; display:none; z-index:5; }
+  .qt { margin-top:10px; padding:10px 14px; border-radius:8px; font-size:0.76rem; line-height:1.5; display:none; }
+  .qt-nm { font-weight:500; font-size:0.72rem; margin-bottom:3px; }
+  .qt-q { font-style:italic; }
+  .qt-a { font-size:0.68rem; margin-top:4px; opacity:0.7; }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <h1>Where does your energy go?</h1>
+  <p class="sub">Set your sleep and work schedule, then drag flexible activities onto the chart. The line rises as you spend energy — the gap below the ceiling is your exercise headroom.</p>
+  <span class="info-tog" onclick="document.getElementById('ip').classList.toggle('open')">What are METs? Read more about this visualization</span>
+  <div class="info-p" id="ip">
+    <h3>What are METs?</h3>
+    <p>METs (Metabolic Equivalent of Task) is a way to quantify how much energy is needed to complete a task. It is based on a baseline of 1 MET being equivalent to the energy cost of a person at rest. MET-hours is a measure of total energy volume for any activity. For example, sitting at rest for 1 hour is 1 MET-hour.</p>
+    <p>Typically, any activity under 3.0 METs is considered <strong>light</strong>; anything between 3.0 and 6.0 METs is considered <strong>moderate</strong>, and anything above 6.0 METs is considered <strong>vigorous</strong>.</p>
+    <p>For adults, the average MET value across an entire day is approximately 1.7 METs (with averages ranging from 1.4 for a lighter day to 2.4 for a more active day). When extrapolated over 24 hours, this means the average daily energy expenditure is about <strong>40.8 MET-hours</strong> (ranging from 33.6 to 57.6). For reference, the American Heart Association recommends 2.5 hours of moderate activity (3–6 METs) or 1.25 hours of vigorous activity (>6 METs) per week.</p>
+    <h3>Example day (no exercise)</h3>
+    <table><tr><th>Activity</th><th>Hours</th><th>METs</th><th>MET-hours</th></tr>
+    <tr><td>Sleeping</td><td>8.0</td><td>0.95</td><td>7.6</td></tr>
+    <tr><td>Commute</td><td>0.9</td><td>2.0</td><td>1.8</td></tr>
+    <tr><td>Work / school</td><td>8.0</td><td>1.8</td><td>14.4</td></tr>
+    <tr><td>Cooking / prep / cleanup</td><td>0.6</td><td>3.3</td><td>2.0</td></tr>
+    <tr><td>Eating</td><td>1.1</td><td>1.5</td><td>1.7</td></tr>
+    <tr><td>Social media / TV</td><td>2.5</td><td>1.15</td><td>2.9</td></tr>
+    <tr><td>Socializing / leisure</td><td>1.0</td><td>1.6</td><td>1.6</td></tr>
+    <tr class="tot"><td>Total</td><td>22.1</td><td></td><td>32.0</td></tr></table>
+    <p>This leaves <strong>1.9 hours of free time</strong> and <strong>8.8 MET-hours of energy headroom</strong> — more than enough for a gym session.</p>
+  </div>
+
+  <div class="lay">
+    <div class="cp">
+      <div class="sl">Fixed schedule</div>
+      <div id="fixedC"></div>
+      <div class="sl">Flexible — drag onto chart or adjust hours</div>
+      <div id="flexC"></div>
+      <div class="sl">Daily energy budget</div>
+      <div class="bc">
+        <div class="bc-h"><span>Your daily limit</span><span id="bDisp">40.8 MET-h</span></div>
+        <input type="range" id="bSlider" min="336" max="576" value="408" step="1" oninput="upd()" style="width:100%">
+        <div class="bc-lb"><span>Light (33.6)</span><span>Active (57.6)</span></div>
+      </div>
+      <div class="sc"><div class="sc-h"><span>Time</span><span id="tVal"></span></div><div class="sb"><div class="sf" id="tFill"></div></div><div class="sm" id="tMsg"></div></div>
+      <div class="sc"><div class="sc-h"><span>Energy used</span><span id="eVal"></span></div><div class="sb"><div class="sf" id="eFill"></div></div><div class="sm" id="eMsg"></div></div>
+      <div class="eb"><div class="eb-t">Can you fit a workout?</div><div id="exC"></div></div>
+    </div>
+    <div class="chp">
+      <div class="cw" id="cWrap">
+        <div class="ct">Your daily energy accumulation</div>
+        <div class="cs">Energy spent rises throughout the day — the gap below the ceiling is your headroom</div>
+        <canvas id="cv" height="400"></canvas>
+        <div class="dh" id="dHint"></div>
+        <div class="lr" id="leg"></div>
+      </div>
+      <div class="qt" id="quoteCard"></div>
+      <div id="insCard" class="ins pos" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var EX_MET=5.5, EX_HRS=0.75, EX_COST=EX_MET*EX_HRS;
+
+var fixedActs=[
+  {id:"sleep",label:"Sleep",met:0.95,color:"#534AB7",sH:23,sM:0,eH:7,eM:0,mood:"neutral",quote:null},
+  {id:"work",label:"Work / school",met:1.8,color:"#378ADD",sH:9,sM:0,eH:17,eM:0,mood:"neutral",quote:null},
+];
+
+var flexActs=[
+  {id:"commute",label:"Commute",met:2.0,color:"#85B7EB",hours:1.0,max:4,mood:"neutral",quote:null},
+  {id:"cooking",label:"Cooking / prep",met:3.3,color:"#EF9F27",hours:0.5,max:3,mood:"slight-pos",quote:{text:"When I am working out lots, when I am getting outside more — that's when I feel my best.",attr:"Interviewee 3"}},
+  {id:"eating",label:"Eating",met:1.5,color:"#BA7517",hours:1.0,max:3,mood:"slight-pos",quote:null},
+  {id:"screen",label:"Social media / TV",met:1.15,color:"#D4537E",hours:2.5,max:6,mood:"negative",quote:{text:"I know a great majority of it is garbage, so it's this distress of giving my time and energy to it when I could be doing something more productive. It's kind of like a drug.",attr:"Interviewee 7"}},
+  {id:"social",label:"Socializing / leisure",met:1.6,color:"#1D9E75",hours:1.0,max:4,mood:"positive",quote:{text:"I prefer group fitness classes — it's more enjoyable when everyone is working together on the same activity.",attr:"Interviewee 6"}},
+  {id:"chores",label:"Chores / errands",met:3.5,color:"#888780",hours:0.5,max:3,mood:"neutral",quote:null},
+];
+
+var moodColors={"positive":"#1D9E75","slight-pos":"#97C459","neutral":"#B4B2A9","negative":"#E24B4A"};
+var moodOpacity={"positive":0.6,"slight-pos":0.45,"neutral":0.25,"negative":0.55};
+
+var placedBlocks=[];
+var cG={pL:50,pR:16,pT:20,pB:70,w:0,h:400,cW:0,cH:0};
+
+function tOpts(sh,sm){var s="";for(var h=0;h<24;h++)for(var m=0;m<60;m+=30){var sel=(h===sh&&m===sm)?" selected":"";var ap=h>=12?"pm":"am",h12=h%12;if(!h12)h12=12;s+='<option value="'+h+":"+m+'"'+sel+">"+h12+":"+(m===0?"00":"30")+ap+"</option>";}return s;}
+
+function buildFixed(){var html="";fixedActs.forEach(function(a,i){html+='<div class="fb"><div class="fb-h"><span class="fb-l"><span class="dot" style="background:'+a.color+'"></span>'+a.label+'</span><span class="fb-m">'+a.met+' METs</span></div><div class="tr"><label>From</label><select onchange="chgF('+i+',\'s\',this.value)">'+tOpts(a.sH,a.sM)+'</select><label>To</label><select onchange="chgF('+i+',\'e\',this.value)">'+tOpts(a.eH,a.eM)+"</select></div></div>";});document.getElementById("fixedC").innerHTML=html;}
+
+function chgF(i,w,v){var p=v.split(":");var h=+p[0],m=+p[1];if(w==="s"){fixedActs[i].sH=h;fixedActs[i].sM=m;}else{fixedActs[i].eH=h;fixedActs[i].eM=m;}upd();}
+
+function buildFlex(){var html="";flexActs.forEach(function(a){html+='<div class="fi" style="background:'+a.color+'22;color:'+a.color+'" draggable="true" ondragstart="fDS(event,\''+a.id+'\')"><span class="fi-l"><span class="dot" style="background:'+a.color+'"></span>'+a.label+' <span class="fi-mb">'+a.met+' METs</span></span><span class="fi-sw"><input type="range" min="0" max="'+(a.max*2)+'" value="'+(a.hours*2)+'" step="1" oninput="fSl(\''+a.id+"',this.value)\" onclick=\"event.stopPropagation()\"><span class=\"fi-v\" id=\"fV_"+a.id+'">'+a.hours+'h</span></span></div>';});document.getElementById("flexC").innerHTML=html;}
+
+function fSl(id,v){var a=flexActs.find(function(x){return x.id===id;});a.hours=v/2;document.getElementById("fV_"+id).textContent=a.hours.toFixed(1)+"h";placedBlocks=placedBlocks.filter(function(b){return b.fId!==id;});upd();}
+
+var dragId=null;
+function fDS(e,id){dragId=id;e.dataTransfer.setData("text/plain",id);}
+
+function setupDrag(){var cv=document.getElementById("cv");var wr=document.getElementById("cWrap");var ht=document.getElementById("dHint");
+wr.addEventListener("dragover",function(e){e.preventDefault();if(!dragId)return;var r=cv.getBoundingClientRect();var x=e.clientX-r.left;var hr=((x-cG.pL)/cG.cW)*24;hr=Math.max(0,Math.min(23.5,Math.round(hr*2)/2));var a=flexActs.find(function(f){return f.id===dragId;});if(!a)return;var x1=cG.pL+(hr/24)*cG.cW;var x2=cG.pL+(Math.min(24,hr+a.hours)/24)*cG.cW;ht.style.display="block";ht.style.left=(x1+cv.offsetLeft)+"px";ht.style.top=(cG.pT+cv.offsetTop)+"px";ht.style.width=(x2-x1)+"px";ht.style.height=cG.cH+"px";});
+wr.addEventListener("dragleave",function(){ht.style.display="none";});
+wr.addEventListener("drop",function(e){e.preventDefault();ht.style.display="none";if(!dragId)return;var r=cv.getBoundingClientRect();var x=e.clientX-r.left;var hr=((x-cG.pL)/cG.cW)*24;hr=Math.max(0,Math.min(23.5,Math.round(hr*2)/2));placedBlocks=placedBlocks.filter(function(b){return b.fId!==dragId;});placedBlocks.push({fId:dragId,startHr:hr});dragId=null;upd();});}
+
+function toD(h,m){return h+m/60;}
+function dur(sH,sM,eH,eM){var s=toD(sH,sM),e=toD(eH,eM);return e>s?e-s:(24-s)+e;}
+
+function buildTL(){
+  var budget=document.getElementById("bSlider").value/10;
+  document.getElementById("bDisp").textContent=budget.toFixed(1)+" MET-h";
+  var segs=[];
+
+  fixedActs.forEach(function(a){var s=toD(a.sH,a.sM),e=toD(a.eH,a.eM);if(e<=s){segs.push({start:s,end:24,met:a.met,label:a.label,color:a.color,mood:a.mood,quote:a.quote});segs.push({start:0,end:e,met:a.met,label:a.label,color:a.color,mood:a.mood,quote:a.quote});}else{segs.push({start:s,end:e,met:a.met,label:a.label,color:a.color,mood:a.mood,quote:a.quote});}});
+
+  var usedF={};
+  placedBlocks.forEach(function(pb){var a=flexActs.find(function(f){return f.id===pb.fId;});if(!a)return;segs.push({start:pb.startHr,end:Math.min(24,pb.startHr+a.hours),met:a.met,label:a.label,color:a.color,mood:a.mood,quote:a.quote});usedF[a.id]=true;});
+
+  segs.sort(function(a,b){return a.start-b.start;});
+  var cov=new Array(48).fill(false);
+  segs.forEach(function(s){var si=Math.floor(s.start*2),ei=Math.ceil(s.end*2);for(var i=si;i<ei&&i<48;i++)cov[i]=true;});
+
+  var gaps=[];var gs=-1;
+  for(var i=0;i<48;i++){if(!cov[i]&&gs===-1)gs=i;if((cov[i]||i===47)&&gs!==-1){gaps.push({start:gs/2,end:(cov[i]?i:i+1)/2});gs=-1;}}
+
+  var fq=flexActs.filter(function(a){return !usedF[a.id]&&a.hours>0;});
+  var fi=0,fr=fq.map(function(a){return a.hours;});
+  gaps.forEach(function(gap){var gt=gap.end-gap.start,cur=gap.start;while(gt>0.01&&fi<fq.length){if(fr[fi]<=0.01){fi++;continue;}var tk=Math.min(fr[fi],gt);segs.push({start:cur,end:cur+tk,met:fq[fi].met,label:fq[fi].label,color:fq[fi].color,mood:fq[fi].mood,quote:fq[fi].quote});fr[fi]-=tk;cur+=tk;gt-=tk;if(fr[fi]<=0.01)fi++;}});
+
+  segs.sort(function(a,b){return a.start-b.start;});
+  var fin=[];var cursor=0;
+  segs.forEach(function(s){if(s.start>cursor+0.01)fin.push({start:cursor,end:s.start,met:1.0,label:"Free time",color:"#C0DD97",mood:"neutral",quote:null});fin.push(s);cursor=Math.max(cursor,s.end);});
+  if(cursor<23.99)fin.push({start:cursor,end:24,met:1.0,label:"Free time",color:"#C0DD97",mood:"neutral",quote:null});
+
+  var usedH=0,totMETh=0;
+  fin.forEach(function(s){var d=s.end-s.start;totMETh+=d*s.met;if(s.label!=="Free time")usedH+=d;});
+  return{segs:fin,totalH:usedH,freeH:24-usedH,totalMETh:totMETh,budget:budget,remaining:budget-totMETh};
+}
+
+var moodRects=[];
+
+function drawChart(data){
+  var cv=document.getElementById("cv");var ctx=cv.getContext("2d");var dpr=window.devicePixelRatio||1;var rect=cv.getBoundingClientRect();
+  cv.width=rect.width*dpr;cv.height=400*dpr;ctx.scale(dpr,dpr);
+  var w=rect.width,h=400;cG.w=w;cG.h=h;cG.cW=w-cG.pL-cG.pR;cG.cH=h-cG.pT-cG.pB;
+  ctx.clearRect(0,0,w,h);
+
+  var budget=data.budget;var yMax=Math.ceil(budget/5)*5+5;
+  var moodY=h-cG.pB+22;var moodH=14;
+
+  for(var v=0;v<=yMax;v+=5){var y=cG.pT+cG.cH-(v/yMax)*cG.cH;ctx.strokeStyle="#e8e7e2";ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cG.pL,y);ctx.lineTo(cG.pL+cG.cW,y);ctx.stroke();ctx.fillStyle="#b4b2a9";ctx.font="10px -apple-system,sans-serif";ctx.textAlign="right";ctx.fillText(v,cG.pL-6,y+3);}
+
+  ctx.save();ctx.translate(14,cG.pT+cG.cH/2);ctx.rotate(-Math.PI/2);ctx.fillStyle="#888";ctx.font="11px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText("MET-hours spent",0,0);ctx.restore();
+
+  var xL=[0,3,6,9,12,15,18,21,24],xN=["12am","3am","6am","9am","12pm","3pm","6pm","9pm","12am"];
+  ctx.fillStyle="#b4b2a9";ctx.font="10px -apple-system,sans-serif";ctx.textAlign="center";
+  xL.forEach(function(hr,i){var x=cG.pL+(hr/24)*cG.cW;ctx.fillText(xN[i],x,h-cG.pB+14);ctx.beginPath();ctx.strokeStyle="#e8e7e2";ctx.moveTo(x,cG.pT);ctx.lineTo(x,cG.pT+cG.cH);ctx.stroke();});
+
+  var ceilY=cG.pT+cG.cH-(budget/yMax)*cG.cH;
+  ctx.fillStyle="rgba(226,75,74,0.04)";ctx.fillRect(cG.pL,cG.pT,cG.cW,ceilY-cG.pT);
+  ctx.setLineDash([6,4]);ctx.strokeStyle="#E24B4A";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cG.pL,ceilY);ctx.lineTo(cG.pL+cG.cW,ceilY);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle="#E24B4A";ctx.font="11px -apple-system,sans-serif";ctx.textAlign="right";ctx.fillText("Daily limit: "+budget.toFixed(1)+" MET-h",cG.pL+cG.cW-4,ceilY-8);
+
+  // Mood strip label
+  ctx.fillStyle="#b4b2a9";ctx.font="10px -apple-system,sans-serif";ctx.textAlign="left";
+  ctx.fillText("How does it feel?",cG.pL,moodY-4);
+
+  var energy=0;
+  moodRects=[];
+  data.segs.forEach(function(seg){
+    var x1=cG.pL+(seg.start/24)*cG.cW;var x2=cG.pL+(seg.end/24)*cG.cW;
+    var y1=cG.pT+cG.cH-(energy/yMax)*cG.cH;
+    var cost=(seg.end-seg.start)*seg.met;energy+=cost;
+    var y2=cG.pT+cG.cH-(energy/yMax)*cG.cH;
+    var yBase=cG.pT+cG.cH;
+
+    ctx.globalAlpha=0.55;ctx.fillStyle=seg.color;
+    ctx.beginPath();ctx.moveTo(x1,yBase);ctx.lineTo(x1,y1);ctx.lineTo(x2,y2);ctx.lineTo(x2,yBase);ctx.closePath();ctx.fill();
+    ctx.globalAlpha=1;ctx.strokeStyle=seg.color;ctx.lineWidth=2.5;
+    ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
+
+    if((x2-x1)>44){var mx=(x1+x2)/2,my=(y1+y2)/2;ctx.fillStyle="#2c2c2a";ctx.font="10px -apple-system,sans-serif";ctx.textAlign="center";ctx.fillText(seg.label,mx,my-10);ctx.fillStyle="#888";ctx.font="9px -apple-system,sans-serif";ctx.fillText("+"+cost.toFixed(1)+" MET-h",mx,my+2);}
+
+    // Mood strip block
+    var mc=moodColors[seg.mood]||"#B4B2A9";var mo=moodOpacity[seg.mood]||0.25;
+    ctx.globalAlpha=mo;ctx.fillStyle=mc;
+    var rx=x1,ry=moodY,rw=x2-x1,rh=moodH;
+    if(rw>1){ctx.beginPath();ctx.moveTo(rx+3,ry);ctx.lineTo(rx+rw-3,ry);ctx.quadraticCurveTo(rx+rw,ry,rx+rw,ry+3);ctx.lineTo(rx+rw,ry+rh-3);ctx.quadraticCurveTo(rx+rw,ry+rh,rx+rw-3,ry+rh);ctx.lineTo(rx+3,ry+rh);ctx.quadraticCurveTo(rx,ry+rh,rx,ry+rh-3);ctx.lineTo(rx,ry+3);ctx.quadraticCurveTo(rx,ry,rx+3,ry);ctx.fill();}
+    ctx.globalAlpha=1;
+
+    moodRects.push({x:rx,y:ry,w:rw,h:rh,label:seg.label,mood:seg.mood,quote:seg.quote,color:seg.color});
+  });
+
+  // Mood legend
+  var mly=moodY+moodH+14;
+  ctx.font="10px -apple-system,sans-serif";ctx.textAlign="left";
+  var mlx=cG.pL;
+  [["#1D9E75",0.6,"Positive"],["#97C459",0.45,"Slightly positive"],["#B4B2A9",0.3,"Neutral"],["#E24B4A",0.55,"Negative"]].forEach(function(m){
+    ctx.globalAlpha=m[1];ctx.fillStyle=m[0];ctx.beginPath();ctx.arc(mlx+4,mly,4,0,Math.PI*2);ctx.fill();
+    ctx.globalAlpha=1;ctx.fillStyle="#888";ctx.fillText(m[2],mlx+12,mly+3);mlx+=ctx.measureText(m[2]).width+24;
+  });
+
+  // Headroom bracket
+  var finalY=cG.pT+cG.cH-(energy/yMax)*cG.cH;
+  if(data.remaining>0){var bx=cG.pL+cG.cW-8;ctx.strokeStyle="#1D9E75";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(bx-6,finalY);ctx.lineTo(bx,finalY);ctx.lineTo(bx,ceilY);ctx.lineTo(bx-6,ceilY);ctx.stroke();var mb=(finalY+ceilY)/2;ctx.fillStyle="#1D9E75";ctx.font="bold 11px -apple-system,sans-serif";ctx.textAlign="right";ctx.fillText(data.remaining.toFixed(1)+" MET-h",bx-10,mb+4);ctx.font="9px -apple-system,sans-serif";ctx.fillText("headroom",bx-10,mb+16);}
+}
+
+function setupHover(){
+  var cv=document.getElementById("cv");
+  cv.addEventListener("mousemove",function(e){
+    var rect=cv.getBoundingClientRect();
+    var scaleX=cv.width/(rect.width*(window.devicePixelRatio||1));
+    var mx=(e.clientX-rect.left);
+    var my=(e.clientY-rect.top);
+    var qc=document.getElementById("quoteCard");var found=false;
+    for(var i=0;i<moodRects.length;i++){
+      var r=moodRects[i];
+      if(mx>=r.x && mx<=r.x+r.w && my>=r.y-6 && my<=r.y+r.h+10){
+        if(r.quote){
+          var mc=r.mood==="negative"?"background:#FCEBEB;color:#791F1F":"background:#EAF3DE;color:#27500A";
+          qc.setAttribute("style","margin-top:10px;padding:10px 14px;border-radius:8px;font-size:0.76rem;line-height:1.5;display:block;"+mc);
+          qc.innerHTML='<div style="font-weight:500;font-size:0.72rem;margin-bottom:3px">'+r.label+'</div><div style="font-style:italic">\u201C'+r.quote.text+'\u201D</div><div style="font-size:0.68rem;margin-top:4px;opacity:0.7">\u2014 '+r.quote.attr+"</div>";found=true;
+        } else if(r.label==="Free time"){
+          qc.setAttribute("style","margin-top:10px;padding:10px 14px;border-radius:8px;font-size:0.76rem;line-height:1.5;display:block;background:#EAF3DE;color:#27500A");
+          qc.innerHTML='<div style="font-weight:500;font-size:0.72rem;margin-bottom:3px">Free time \u2014 add exercise here?</div><div style="font-style:italic">\u201CExerting myself is really great for my mental health...if my mental health is good, I am better about choosing the right foods, being active.\u201D</div><div style="font-size:0.68rem;margin-top:4px;opacity:0.7">\u2014 Interviewee 7</div>';found=true;
+        }
+        break;
+      }
+    }
+    if(!found)qc.style.display="none";
+  });
+  cv.addEventListener("mouseleave",function(){document.getElementById("quoteCard").style.display="none";});
+}
+
+function updSum(data){
+  var tp=Math.min(100,(data.totalH/24)*100);document.getElementById("tFill").style.width=tp+"%";document.getElementById("tFill").style.background=data.totalH<=24?"#378ADD":"#E24B4A";document.getElementById("tVal").textContent=data.totalH.toFixed(1)+"/24h";
+  var tm=document.getElementById("tMsg");if(data.freeH>0){tm.textContent=data.freeH.toFixed(1)+"h free";tm.style.color="#1D9E75";}else{tm.textContent="No free time";tm.style.color="#E24B4A";}
+
+  var rem=Math.max(0,data.remaining);var ep=Math.min(100,(data.totalMETh/data.budget)*100);
+  document.getElementById("eFill").style.width=ep+"%";document.getElementById("eFill").style.background=rem>=EX_COST?"#378ADD":rem>0?"#BA7517":"#E24B4A";
+  document.getElementById("eVal").textContent=data.totalMETh.toFixed(1)+" / "+data.budget.toFixed(1)+" MET-h";
+  var em=document.getElementById("eMsg");if(rem>=EX_COST){em.innerHTML=rem.toFixed(1)+" MET-h remaining — <strong>room for a workout</strong>";em.style.color="#1D9E75";}else if(rem>0){em.innerHTML=rem.toFixed(1)+" MET-h left — try a <strong>walk or yoga</strong>";em.style.color="#BA7517";}else{em.textContent="Budget spent";em.style.color="#E24B4A";}
+
+  var el=document.getElementById("exC");var canT=data.freeH>=EX_HRS,canE=rem>=EX_COST;
+  if(canT&&canE){el.innerHTML='<div class="eb-s">Yes — '+rem.toFixed(1)+' MET-h headroom</div><div class="eb-x">A 45-min workout uses '+EX_COST.toFixed(1)+' MET-h — <strong>'+Math.round((EX_COST/rem)*100)+'%</strong> of your remaining budget.</div>';}
+  else if(!canT&&canE){var scr=0;data.segs.forEach(function(s){if(s.label.indexOf("Social")>=0||s.label.indexOf("TV")>=0)scr+=(s.end-s.start);});el.innerHTML='<div class="eb-s" style="color:#BA7517">Energy yes, time no</div><div class="eb-x">You have '+rem.toFixed(1)+' MET-h but only '+(data.freeH*60).toFixed(0)+' min free. Screen time uses '+scr.toFixed(1)+'h at ~1 MET — swapping 45 min gives a '+Math.round(EX_MET/1.15)+'x energy return.</div>';}
+  else if(canT&&!canE){el.innerHTML='<div class="eb-s" style="color:#BA7517">Time yes, energy low</div><div class="eb-x">You have time but only '+rem.toFixed(1)+' MET-h left. A 30-min walk (1.75 MET-h) is still doable.</div>';}
+  else{el.innerHTML='<div class="eb-s" style="color:#E24B4A">Tank full</div><div class="eb-x">Your schedule exceeds your energy budget. Try adjusting your estimates.</div>';}
+}
+
+function updIns(data){
+  var c=document.getElementById("insCard");c.style.display="block";var rem=Math.max(0,data.remaining);
+  var scC=0,scH=0;data.segs.forEach(function(s){if(s.label.indexOf("Social")>=0||s.label.indexOf("TV")>=0){scC+=(s.end-s.start)*s.met;scH+=(s.end-s.start);}});
+  if(rem>=EX_COST){c.className="ins pos";c.innerHTML="After your entire day, you've used <strong>"+data.totalMETh.toFixed(1)+" MET-hours</strong> of your "+data.budget.toFixed(1)+" budget. Screen time adds only <strong>"+scC.toFixed(1)+" MET-h</strong> despite taking "+scH.toFixed(1)+" hours — almost no energy cost, but significant time cost. A 45-min gym session adds <strong>"+EX_COST.toFixed(1)+" MET-h</strong> — the best energy-per-minute investment in your day.";}
+  else if(rem>0){c.className="ins wrn";c.innerHTML="Your energy budget is nearly full — only <strong>"+rem.toFixed(1)+" MET-h</strong> of headroom. Screen time costs <strong>"+scC.toFixed(1)+" MET-h</strong> but gives nothing back physically. Even a 20-min walk at 3.5 METs (1.2 MET-h) fits.";}
+  else{c.className="ins neg";c.innerHTML="Your day uses <strong>"+data.totalMETh.toFixed(1)+" MET-hours</strong> — hitting the "+data.budget.toFixed(1)+" ceiling. Screen time at ~1 MET costs almost no energy but uses "+scH.toFixed(1)+" hours of your day.";}
+}
+
+function buildLeg(){var h="";fixedActs.forEach(function(a){h+='<div class="li"><span class="ls" style="background:'+a.color+'"></span>'+a.label+" ("+a.met+")</div>";});flexActs.forEach(function(a){h+='<div class="li"><span class="ls" style="background:'+a.color+'"></span>'+a.label+" ("+a.met+")</div>";});h+='<div class="li"><span class="ls" style="background:#C0DD97"></span>Free time (1.0)</div>';document.getElementById("leg").innerHTML=h;}
+
+function upd(){var d=buildTL();drawChart(d);updSum(d);updIns(d);}
+
+buildFixed();buildFlex();buildLeg();setupDrag();setupHover();upd();
+window.addEventListener("resize",upd);
+</script>
+</body>
+</html>

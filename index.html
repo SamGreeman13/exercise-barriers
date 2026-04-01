@@ -7,196 +7,200 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fafaf8; color:#2c2c2a; }
+  .page { max-width:900px; margin:0 auto; padding:2rem; }
+  .hero { text-align:center; margin-bottom:1.5rem; }
+  .hero h1 { font-size:2rem; font-weight:500; margin-bottom:6px; }
+  .hero p { font-size:0.9rem; color:#888; line-height:1.6; }
 
-  .hero { text-align:center; padding:3.5rem 2rem 1rem; max-width:700px; margin:0 auto; }
-  .hero h1 { font-size:2rem; font-weight:500; line-height:1.3; margin-bottom:8px; }
-  .hero p { font-size:0.95rem; color:#888; line-height:1.6; }
+  .venn-wrap { position:relative; width:100%; max-width:720px; margin:0 auto; height:500px; }
 
-  .chart-area { display:flex; justify-content:center; padding:1rem 0 0; }
-  svg text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .venn-circle { position:absolute; border-radius:50%; transition:transform 0.25s ease; }
 
-  .prompt { text-align:center; font-size:0.8rem; color:#b4b2a9; margin-top:0; padding-bottom:1.5rem; }
+  .circle-label { position:absolute; pointer-events:none; z-index:12; text-align:center; }
+  .circle-label-name { font-size:16px; font-weight:500; line-height:1.3; }
+  .circle-label-count { font-size:12px; opacity:0.6; margin-top:2px; }
 
-  .about { max-width:640px; margin:0 auto; padding:2rem 2rem 1rem; }
+  .inner-circle { position:absolute; border-radius:50%; transition:transform 0.25s ease; z-index:5; }
+
+  .zone-label { position:absolute; pointer-events:none; z-index:15; text-align:center; }
+  .zone-label-name { font-size:11px; font-weight:500; line-height:1.4; }
+  .zone-label-sub { font-size:9px; opacity:0.5; margin-top:2px; }
+
+  .tooltip { position:absolute; background:white; border:0.5px solid #d3d1c7; border-radius:10px;
+    padding:12px 16px; font-size:0.8rem; line-height:1.6; max-width:240px; opacity:0;
+    pointer-events:none; transition:opacity 0.15s; z-index:30;
+    box-shadow:0 4px 16px rgba(0,0,0,0.06); }
+  .tip-title { font-weight:500; margin-bottom:4px; }
+  .tip-cta { font-size:0.72rem; margin-top:6px; font-weight:500; }
+
+  .prompt { text-align:center; font-size:0.8rem; color:#b4b2a9; margin-top:12px; }
+
+  .about { max-width:640px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid #e8e7e2; }
   .about h2 { font-size:1.1rem; font-weight:500; margin-bottom:8px; }
   .about p { font-size:0.85rem; color:#666; line-height:1.7; margin-bottom:12px; }
 
   .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#b4b2a9; border-top:1px solid #e8e7e2; margin-top:2rem; }
-
-  .tooltip { position:fixed; background:white; border:1px solid #d3d1c7; border-radius:10px;
-    padding:12px 16px; font-size:0.82rem; pointer-events:none; opacity:0; transition:opacity 0.15s;
-    box-shadow:0 4px 16px rgba(0,0,0,0.08); z-index:100; max-width:240px; line-height:1.6; }
-  .tooltip-title { font-weight:600; margin-bottom:4px; }
-  .tooltip-stat { font-size:0.75rem; color:#888; }
-  .tooltip-cta { font-size:0.75rem; color:#0C447C; margin-top:6px; font-weight:500; }
 </style>
 </head>
 <body>
+<div class="page">
 
-<div class="hero">
-  <h1>What keeps people from the gym?</h1>
-  <p>We interviewed 8 people about their barriers to physical activity. These are the patterns we found. Click a barrier to explore the data behind it.</p>
-</div>
+  <div class="hero">
+    <h1>What keeps people from the gym?</h1>
+    <p>We interviewed 8 people about their barriers to physical activity.<br>Click any region to explore the data behind it.</p>
+  </div>
 
-<div class="chart-area">
-  <svg id="bubbles" width="800" height="480"></svg>
-</div>
-<div class="prompt">Click a bubble to explore that barrier</div>
+  <div class="venn-wrap" id="venn">
 
-<div class="about">
-  <h2>About this project</h2>
-  <p>This research explores the common barriers that prevent people from going to the gym, drawing on qualitative interviews with 8 participants aged 18-30 in the Greater Boston area. We examined psychological barriers like body image and gym intimidation alongside logistical barriers like cost and proximity.</p>
-  <p>What we found surprised us: the barriers people <em>feel</em> most strongly — body image, social media's influence — are rarely the ones they <em>name</em> as their biggest obstacle. Instead, time and cost dominate the conversation, while deeper psychological barriers operate quietly underneath.</p>
-  <p>Each visualization on this site addresses a specific barrier with real data and real quotes from our participants.</p>
+    <!-- Mental / Intrinsic (left, pink) -->
+    <div class="venn-circle" id="cMental"
+      style="width:310px;height:310px;left:50px;top:85px;background:rgba(212,83,126,0.10);border:1.5px solid rgba(212,83,126,0.30);">
+    </div>
+    <div class="circle-label" style="left:50px;top:85px;width:310px;height:310px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-right:80px;">
+      <div class="circle-label-name" style="color:#72243E;">Mental /<br>intrinsic</div>
+      <div class="circle-label-count" style="color:#993556;">8 of 8 participants</div>
+    </div>
+
+    <!-- Time (right, blue) -->
+    <div class="venn-circle" id="cTime"
+      style="width:350px;height:350px;left:260px;top:65px;background:rgba(55,138,221,0.08);border:1.5px solid rgba(55,138,221,0.25);">
+    </div>
+    <div class="circle-label" style="left:215px;top:-25px;width:350px;height:350px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-left:100px;">
+      <div class="circle-label-name" style="color:#0C447C;">Time</div>
+      <div class="circle-label-count" style="color:#185FA5;">7 of 8 participants</div>
+    </div>
+
+    <!-- Accessibility / Distance (inside Time, right side) -->
+    <div class="inner-circle" id="cAccess"
+      style="width:155px;height:155px;left:420px;top:200px;background:rgba(55,138,221,0.16);border:1.5px solid rgba(55,138,221,0.35);">
+    </div>
+    <div class="circle-label" style="left:420px;top:200px;width:155px;height:155px;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div class="circle-label-name" style="color:#0C447C;font-size:13px;">Accessibility /<br>distance</div>
+      <div class="circle-label-count" style="color:#185FA5;font-size:10px;">6 of 8 participants</div>
+    </div>
+
+    <!-- Overlap label (no background div needed) -->
+    <div class="zone-label" style="left:265px;top:210px;width:90px;">
+      <div class="zone-label-name" style="color:#791F1F;">Time vs.<br>mental tradeoff</div>
+      <div class="zone-label-sub" style="color:#A32D2D;">Click to explore</div>
+    </div>
+
+    <!-- Sub-labels for non-overlap zones -->
+    <div class="zone-label" style="left:125px;top:400px;width:150px;">
+      <div class="zone-label-name" style="color:#993556;">Body image, social media,<br>gym intimidation</div>
+    </div>
+    <div class="zone-label" style="left:375px;top:425px;width:130px;">
+      <div class="zone-label-name" style="color:#185FA5;">Scheduling, cost,<br>proximity</div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+
+  <div class="prompt">Hover over any region for details — click to explore</div>
+
+  <div class="about">
+    <h2>About this project</h2>
+    <p>This research explores the common barriers that prevent people from going to the gym, drawing on qualitative interviews with 8 participants aged 18–30 in the Greater Boston area. We examined psychological barriers like body image and gym intimidation alongside logistical barriers like cost, time, and proximity.</p>
+    <p>What we found surprised us: the barriers people <em>feel</em> most strongly — body image, social media's influence on self-perception — are rarely the ones they <em>name</em> as their biggest obstacle. Instead, time and cost dominate the conversation, while deeper psychological barriers operate quietly underneath. The overlap between these two categories is where the most interesting insights live.</p>
+  </div>
+
 </div>
 
 <div class="footer">
-  CS 7250 Information Visualization &middot; Northeastern University &middot; 2026
+  CS 7250 Information Visualization · Northeastern University · 2026
 </div>
 
-<div class="tooltip" id="tooltip"></div>
-
 <script>
-var barriers = [
-  {
-    name: "Body image &\nsocial media",
-    shortName: "Body image & social media",
-    count: 8,
-    mentions: 49,
-    desc: "Every participant discussed how social media affects their self-image — yet none named it as their biggest barrier.",
-    color: "#D4537E",
-    link: "mindmap.html"
+var tips = {
+  mental: {
+    title: "Mental / intrinsic barriers",
+    titleColor: "#72243E",
+    text: "Body image, social media influence, gym intimidation, low motivation. Felt by all 8 participants — yet rarely named as their biggest obstacle.",
+    cta: "Click to explore what works", ctaColor: "#72243E", link: "self_assessment.html",
   },
-  {
-    name: "Gym\nintimidation",
-    shortName: "Gym intimidation",
-    count: 8,
-    mentions: 13,
-    desc: "All 8 participants felt gyms cater to certain types of people. But the same people who feel intimidated thrive in group settings.",
-    color: "#ED93B1",
-    link: "intimidation.html"
+  time: {
+    title: "Time barriers",
+    titleColor: "#0C447C",
+    text: "Scheduling conflicts, energy limitations, competing priorities. Named as the top barrier by 5 of 8 participants.",
+    cta: "Click to explore the accessibility map", ctaColor: "#0C447C", link: "boston_gym_map_v4.html",
   },
-  {
-    name: "Time\nconstraints",
-    shortName: "Time constraints",
-    count: 7,
-    mentions: 18,
-    desc: "The most commonly named barrier — but when we broke down how participants spend their time, most had hours going to social media.",
-    color: "#378ADD",
-    link: "mindmap.html"
+  access: {
+    title: "Accessibility / distance",
+    titleColor: "#0C447C",
+    text: "Cost, proximity to gyms, transit access. A subset of time/effort — if a gym is far or expensive, it costs more time and energy to reach.",
+    cta: "Click to explore the accessibility map", ctaColor: "#0C447C", link: "boston_gym_map_v4.html",
   },
-  {
-    name: "Cost &\naccess",
-    shortName: "Cost & access",
-    count: 6,
-    mentions: 11,
-    desc: "How close is the nearest gym you can afford? Explore an interactive map of gym accessibility across Boston.",
-    color: "#0C447C",
-    link: "boston_gym_map_v4.html"
+  overlap: {
+    title: "Where time meets mindset",
+    titleColor: "#791F1F",
+    text: "Social media drains time at almost no energy cost — but leaves people feeling worse. Exercise uses real energy but improves mood. The tradeoff is the insight.",
+    cta: "Click to explore the energy timeline", ctaColor: "#791F1F", link: "energy_timeline_v5.html",
   },
-];
+};
 
-var svg = document.getElementById("bubbles");
-var w = 800, h = 480;
-var TT = document.getElementById("tooltip");
+var circles = {
+  mental: { cx: 50 + 155, cy: 85 + 155, r: 155 },
+  time:   { cx: 260 + 175, cy: 65 + 175, r: 175 },
+  access: { cx: 420 + 77.5, cy: 200 + 77.5, r: 77.5 },
+};
 
-function showTT(e, b) {
-  TT.innerHTML =
-    '<div class="tooltip-title">' + b.shortName + '</div>' +
-    '<div class="tooltip-stat">' + b.count + ' of 8 participants &middot; ' + b.mentions + ' total mentions</div>' +
-    '<div style="margin-top:6px;font-size:0.78rem;line-height:1.5">' + b.desc + '</div>' +
-    '<div class="tooltip-cta">Click to explore &rarr;</div>';
-  TT.style.opacity = 1;
-  moveTT(e);
+function dist(x1, y1, x2, y2) {
+  return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
-function moveTT(e) {
-  var x = e.clientX + 16;
-  var y = e.clientY - 16;
-  if (x + 250 > window.innerWidth) x = e.clientX - 260;
-  TT.style.left = x + "px";
-  TT.style.top = y + "px";
+
+function getZone(mx, my) {
+  var inMental = dist(mx, my, circles.mental.cx, circles.mental.cy) <= circles.mental.r;
+  var inTime = dist(mx, my, circles.time.cx, circles.time.cy) <= circles.time.r;
+  var inAccess = dist(mx, my, circles.access.cx, circles.access.cy) <= circles.access.r;
+
+  if (inAccess) return "access";
+  if (inMental && inTime) return "overlap";
+  if (inTime) return "time";
+  if (inMental) return "mental";
+  return null;
 }
-function hideTT() { TT.style.opacity = 0; }
 
-var positions = [
-  { x: 320, y: 230 },
-  { x: 520, y: 200 },
-  { x: 180, y: 280 },
-  { x: 460, y: 360 },
-];
+var tt = document.getElementById("tooltip");
+var venn = document.getElementById("venn");
 
-barriers.forEach(function(b, i) {
-  var r = 30 + b.count * 12;
-  var pos = positions[i];
-  var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-  g.style.cursor = "pointer";
+venn.addEventListener("mousemove", function(e) {
+  var vr = venn.getBoundingClientRect();
+  var mx = e.clientX - vr.left;
+  var my = e.clientY - vr.top;
+  var zone = getZone(mx, my);
 
-  // Shadow
-  var shadow = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  shadow.setAttribute("cx", pos.x + 2);
-  shadow.setAttribute("cy", pos.y + 3);
-  shadow.setAttribute("r", r);
-  shadow.setAttribute("fill", "rgba(0,0,0,0.06)");
-  g.appendChild(shadow);
+  if (zone) {
+    var d = tips[zone];
+    var html = '<div class="tip-title" style="color:' + d.titleColor + '">' + d.title + '</div>';
+    html += '<div>' + d.text + '</div>';
+    if (d.cta) html += '<div class="tip-cta" style="color:' + d.ctaColor + '">' + d.cta + ' \u2192</div>';
+    tt.innerHTML = html;
+    tt.style.opacity = 1;
+    var x = e.clientX - vr.left + 16;
+    var y = e.clientY - vr.top - 10;
+    if (x + 250 > vr.width) x = e.clientX - vr.left - 260;
+    if (y < 0) y = 10;
+    tt.style.left = x + "px";
+    tt.style.top = y + "px";
+    venn.style.cursor = d.link ? "pointer" : "default";
+  } else {
+    tt.style.opacity = 0;
+    venn.style.cursor = "default";
+  }
+});
 
-  // Main circle
-  var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-  circle.setAttribute("cx", pos.x);
-  circle.setAttribute("cy", pos.y);
-  circle.setAttribute("r", r);
-  circle.setAttribute("fill", b.color);
-  circle.setAttribute("opacity", "0.85");
-  circle.style.transition = "r 0.25s ease, opacity 0.2s";
-  g.appendChild(circle);
+venn.addEventListener("mouseleave", function() {
+  tt.style.opacity = 0;
+});
 
-  // Count label
-  var countLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
-  countLabel.setAttribute("x", pos.x);
-  countLabel.setAttribute("y", pos.y - 14);
-  countLabel.setAttribute("text-anchor", "middle");
-  countLabel.setAttribute("dominant-baseline", "central");
-  countLabel.setAttribute("font-size", "22px");
-  countLabel.setAttribute("font-weight", "600");
-  countLabel.setAttribute("fill", "white");
-  countLabel.setAttribute("pointer-events", "none");
-  countLabel.textContent = b.count + "/8";
-  g.appendChild(countLabel);
-
-  // Name lines
-  var lines = b.name.split("\n");
-  lines.forEach(function(line, li) {
-    var text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-    text.setAttribute("x", pos.x);
-    text.setAttribute("y", pos.y + 8 + li * 14);
-    text.setAttribute("text-anchor", "middle");
-    text.setAttribute("dominant-baseline", "central");
-    text.setAttribute("font-size", "11px");
-    text.setAttribute("font-weight", "500");
-    text.setAttribute("fill", "rgba(255,255,255,0.9)");
-    text.setAttribute("pointer-events", "none");
-    text.textContent = line;
-    g.appendChild(text);
-  });
-
-  // Interactions
-  g.addEventListener("mouseenter", function(e) {
-    circle.setAttribute("opacity", "1");
-    circle.setAttribute("r", r + 6);
-    shadow.setAttribute("r", r + 6);
-    showTT(e, b);
-  });
-  g.addEventListener("mousemove", moveTT);
-  g.addEventListener("mouseleave", function() {
-    circle.setAttribute("opacity", "0.85");
-    circle.setAttribute("r", r);
-    shadow.setAttribute("r", r);
-    hideTT();
-  });
-  g.addEventListener("click", function() {
-    window.location.href = b.link;
-  });
-
-  svg.appendChild(g);
+venn.addEventListener("click", function(e) {
+  var vr = venn.getBoundingClientRect();
+  var mx = e.clientX - vr.left;
+  var my = e.clientY - vr.top;
+  var zone = getZone(mx, my);
+  if (zone && tips[zone].link) {
+    window.location.href = tips[zone].link;
+  }
 });
 </script>
 </body>

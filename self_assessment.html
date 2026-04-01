@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What works for people like you?</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fafaf8; color:#2c2c2a; }
+  .ctn { max-width:1000px; margin:0 auto; padding:2rem; }
+  h1 { font-size:1.5rem; font-weight:500; margin-bottom:4px; }
+  .sub { font-size:0.85rem; color:#888; margin-bottom:2rem; line-height:1.6; }
+
+  .layout { display:flex; gap:2rem; flex-wrap:wrap; }
+  .left { flex:0 0 320px; }
+  .right { flex:1; min-width:360px; }
+
+  .sl { font-size:0.7rem; font-weight:500; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin:16px 0 8px; }
+  .sl:first-child { margin-top:0; }
+
+  .q { margin-bottom:14px; }
+  .q-label { font-size:0.82rem; font-weight:500; margin-bottom:2px; }
+  .q-desc { font-size:0.72rem; color:#888; margin-bottom:6px; }
+  .q-row { display:flex; align-items:center; gap:8px; }
+  .q-row input { flex:1; }
+  .q-ends { display:flex; justify-content:space-between; font-size:0.65rem; color:#b4b2a9; margin-top:2px; }
+  .q-val { font-size:0.85rem; font-weight:500; min-width:24px; text-align:right; }
+
+  .radar-wrap { display:flex; justify-content:center; margin-bottom:16px; }
+  canvas { width:100%; max-width:420px; }
+
+  .radar-legend { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:16px; }
+  .radar-legend-item { font-size:0.68rem; color:#888; display:flex; align-items:center; gap:4px; }
+  .radar-legend-swatch { width:10px; height:10px; border-radius:2px; display:inline-block; }
+
+  .rec-panel { background:white; border:1px solid #e8e7e2; border-radius:10px; padding:16px 20px; }
+  .rec-header { font-size:0.9rem; font-weight:500; margin-bottom:4px; }
+  .rec-match-count { font-size:0.8rem; color:#888; margin-bottom:14px; line-height:1.5; }
+  .rec-match-count strong { color:#1D9E75; }
+
+  .rec-section { margin-bottom:14px; }
+  .rec-section-title { font-size:0.72rem; font-weight:500; color:#888; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:6px; }
+
+  .rec-top { padding:12px 14px; background:#EAF3DE; border-radius:8px; margin-bottom:12px; }
+  .rec-top-label { font-size:0.7rem; font-weight:500; color:#27500A; margin-bottom:2px; }
+  .rec-top-value { font-size:1.1rem; font-weight:500; color:#27500A; }
+  .rec-top-stat { font-size:0.75rem; color:#3B6D11; margin-top:4px; }
+
+  .rec-list { list-style:none; }
+  .rec-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #e8e7e2; }
+  .rec-item:last-child { border-bottom:none; }
+  .rec-bar-wrap { flex:1; }
+  .rec-bar-label { font-size:0.78rem; font-weight:500; margin-bottom:3px; }
+  .rec-bar-outer { height:8px; background:#e8e7e2; border-radius:4px; overflow:hidden; }
+  .rec-bar-inner { height:100%; border-radius:4px; transition:width 0.4s; }
+  .rec-bar-stat { font-size:0.68rem; color:#888; margin-top:2px; }
+
+  .rec-insight { margin-top:14px; padding:12px 14px; border-radius:8px; background:#E6F1FB; font-size:0.78rem; line-height:1.6; color:#0C447C; }
+
+  .no-match { padding:16px; text-align:center; color:#888; font-size:0.85rem; }
+</style>
+</head>
+<body>
+<div class="ctn">
+  <h1>What works for people like you?</h1>
+  <p class="sub">Rate how you feel about each dimension below. We'll show you what helped interview participants who faced similar mental barriers — and what you might try first.</p>
+
+  <div class="layout">
+    <div class="left">
+      <div class="sl">How do you feel?</div>
+
+      <div class="q">
+        <div class="q-label">How intimidated do you feel by gyms?</div>
+        <div class="q-row"><input type="range" min="1" max="10" value="5" id="qIntim" oninput="update()"><span class="q-val" id="vIntim">5</span></div>
+        <div class="q-ends"><span>Not at all</span><span>Extremely</span></div>
+      </div>
+
+      <div class="q">
+        <div class="q-label">How much does social media affect how you feel about your body?</div>
+        <div class="q-row"><input type="range" min="1" max="10" value="5" id="qSocial" oninput="update()"><span class="q-val" id="vSocial">5</span></div>
+        <div class="q-ends"><span>Not at all</span><span>A lot</span></div>
+      </div>
+
+      <div class="q">
+        <div class="q-label">How confident are you knowing what to do at a gym?</div>
+        <div class="q-row"><input type="range" min="1" max="10" value="5" id="qConf" oninput="update()"><span class="q-val" id="vConf">5</span></div>
+        <div class="q-ends"><span>Very lost</span><span>Very confident</span></div>
+      </div>
+
+      <div class="q">
+        <div class="q-label">How concerned are you about being judged?</div>
+        <div class="q-row"><input type="range" min="1" max="10" value="5" id="qJudge" oninput="update()"><span class="q-val" id="vJudge">5</span></div>
+        <div class="q-ends"><span>Not at all</span><span>Very concerned</span></div>
+      </div>
+
+      <div class="q">
+        <div class="q-label">How important is having someone to go with?</div>
+        <div class="q-row"><input type="range" min="1" max="10" value="5" id="qPartner" oninput="update()"><span class="q-val" id="vPartner">5</span></div>
+        <div class="q-ends"><span>Prefer alone</span><span>Need a partner</span></div>
+      </div>
+
+      <div class="sl">Your profile vs. participants</div>
+      <div class="radar-wrap"><canvas id="radar" width="420" height="420"></canvas></div>
+      <div class="radar-legend">
+        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#2c2c2a"></span>You</div>
+        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#1D9E75"></span>Similar participants</div>
+        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#d3d1c7"></span>Other participants</div>
+      </div>
+    </div>
+
+    <div class="right">
+      <div class="sl">What the evidence says</div>
+      <div class="rec-panel" id="recPanel"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var axisLabels = ["Gym\nintimidation","Social media\nimpact","Gym\nconfidence","Fear of\njudgment","Need a\npartner"];
+
+var participants = [
+  {id:1, intim:7, social:6, conf:8, judge:7, partner:8,
+   solutions:["Group classes","Exercising with friends","Structured classes from past sports"],
+   topSolution:"Group classes", background:"Past cross country, track, and dance"},
+  {id:2, intim:7, social:3, conf:3, judge:7, partner:9,
+   solutions:["Group classes","Being around people","Learning gym layout"],
+   topSolution:"Group classes", background:"Past soccer, track & field, lacrosse"},
+  {id:3, intim:7, social:6, conf:6, judge:5, partner:7,
+   solutions:["Group classes","Accountability buddy","Support system"],
+   topSolution:"Group classes", background:"Past sports — love of the sport itself"},
+  {id:4, intim:3, social:2, conf:9, judge:2, partner:2,
+   solutions:["Working out alone","Recreating fun from youth sports","Good diet and routine"],
+   topSolution:"Solo routine", background:"Past sports — fun experiences and feelings"},
+  {id:5, intim:2, social:4, conf:8, judge:2, partner:2,
+   solutions:["Working out alone","Set routine","Peace and focus"],
+   topSolution:"Solo routine", background:"Past soccer and cricket"},
+  {id:6, intim:4, social:4, conf:8, judge:4, partner:9,
+   solutions:["Group classes","Accountability partner","Gym close to home"],
+   topSolution:"Group classes", background:"Past little league, soccer, basketball, volleyball"},
+  {id:7, intim:3, social:3, conf:9, judge:2, partner:2,
+   solutions:["Working out alone","Flexibility and function focus","Being limber"],
+   topSolution:"Solo routine", background:"Past tennis"},
+  {id:8, intim:6, social:6, conf:10, judge:5, partner:5,
+   solutions:["Team sports","Friends who share interest","Workplace gym"],
+   topSolution:"Team sports / gym buddy", background:"Past wrestling and football"},
+];
+
+function getUserProfile() {
+  var u = {
+    intim: +document.getElementById("qIntim").value,
+    social: +document.getElementById("qSocial").value,
+    conf: +document.getElementById("qConf").value,
+    judge: +document.getElementById("qJudge").value,
+    partner: +document.getElementById("qPartner").value,
+  };
+  document.getElementById("vIntim").textContent = u.intim;
+  document.getElementById("vSocial").textContent = u.social;
+  document.getElementById("vConf").textContent = u.conf;
+  document.getElementById("vJudge").textContent = u.judge;
+  document.getElementById("vPartner").textContent = u.partner;
+  return u;
+}
+
+function distance(u, p) {
+  return Math.sqrt(
+    Math.pow(u.intim - p.intim, 2) +
+    Math.pow(u.social - p.social, 2) +
+    Math.pow(u.conf - p.conf, 2) +
+    Math.pow(u.judge - p.judge, 2) +
+    Math.pow(u.partner - p.partner, 2)
+  );
+}
+
+function findSimilar(u, threshold) {
+  var dists = participants.map(function(p) { return { p: p, d: distance(u, p) }; });
+  dists.sort(function(a, b) { return a.d - b.d; });
+  var maxDist = threshold || 8;
+  var similar = dists.filter(function(x) { return x.d <= maxDist; });
+  if (similar.length < 2) similar = dists.slice(0, 3);
+  return similar.map(function(x) { return x.p; });
+}
+
+function drawRadar(user, similarIds) {
+  var cv = document.getElementById("radar");
+  var ctx = cv.getContext("2d");
+  var dpr = window.devicePixelRatio || 1;
+  var w = cv.offsetWidth, h = cv.offsetHeight;
+  cv.width = w * dpr; cv.height = h * dpr;
+  ctx.scale(dpr, dpr);
+
+  var cx = w/2, cy = h/2, maxR = Math.min(w,h)/2 - 48;
+  var n = 5;
+
+  ctx.clearRect(0,0,w,h);
+
+  for (var ring = 2; ring <= 10; ring += 2) {
+    ctx.beginPath();
+    ctx.strokeStyle = "#e8e7e2"; ctx.lineWidth = 0.5;
+    for (var i = 0; i <= n; i++) {
+      var a = (Math.PI*2/n)*i - Math.PI/2;
+      var r = (ring/10)*maxR;
+      if (i===0) ctx.moveTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
+      else ctx.lineTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
+    }
+    ctx.stroke();
+  }
+
+  for (var i = 0; i < n; i++) {
+    var a = (Math.PI*2/n)*i - Math.PI/2;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+maxR*Math.cos(a), cy+maxR*Math.sin(a));
+    ctx.strokeStyle = "#d3d1c7"; ctx.lineWidth = 0.5; ctx.stroke();
+
+    var lx = cx + (maxR+26)*Math.cos(a);
+    var ly = cy + (maxR+26)*Math.sin(a);
+    ctx.fillStyle = "#888"; ctx.font = "11px -apple-system,sans-serif";
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    axisLabels[i].split("\n").forEach(function(line, li) {
+      ctx.fillText(line, lx, ly + (li - 0.5) * 13);
+    });
+  }
+
+  function drawProfile(vals, color, alpha, lineW, fill) {
+    ctx.beginPath();
+    ctx.strokeStyle = color; ctx.lineWidth = lineW; ctx.globalAlpha = alpha;
+    for (var i = 0; i <= n; i++) {
+      var idx = i % n;
+      var a = (Math.PI*2/n)*idx - Math.PI/2;
+      var r = (vals[idx]/10)*maxR;
+      if (i===0) ctx.moveTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
+      else ctx.lineTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
+    }
+    ctx.stroke();
+    if (fill) { ctx.fillStyle = color; ctx.globalAlpha = alpha * 0.3; ctx.fill(); }
+    ctx.globalAlpha = 1;
+  }
+
+  participants.forEach(function(p) {
+    var isSimilar = similarIds.indexOf(p.id) >= 0;
+    var vals = [p.intim, p.social, p.conf, p.judge, p.partner];
+    var color = isSimilar ? "#1D9E75" : "#d3d1c7";
+    var alpha = isSimilar ? 0.6 : 0.3;
+    drawProfile(vals, color, alpha, isSimilar ? 2 : 1, isSimilar);
+  });
+
+  var uVals = [user.intim, user.social, user.conf, user.judge, user.partner];
+  drawProfile(uVals, "#2c2c2a", 1, 3, true);
+  for (var i = 0; i < n; i++) {
+    var a = (Math.PI*2/n)*i - Math.PI/2;
+    var r = (uVals[i]/10)*maxR;
+    ctx.beginPath(); ctx.arc(cx+r*Math.cos(a), cy+r*Math.sin(a), 4, 0, Math.PI*2);
+    ctx.fillStyle = "#2c2c2a"; ctx.fill();
+  }
+}
+
+function buildRecommendations(user, similar) {
+  var panel = document.getElementById("recPanel");
+
+  if (similar.length === 0) {
+    panel.innerHTML = '<div class="no-match">Adjust the sliders to see recommendations.</div>';
+    return;
+  }
+
+  var n = similar.length;
+
+  var solCounts = {};
+  similar.forEach(function(p) {
+    p.solutions.forEach(function(s) {
+      solCounts[s] = (solCounts[s] || 0) + 1;
+    });
+  });
+
+  var solList = Object.keys(solCounts).map(function(s) { return { name: s, count: solCounts[s] }; });
+  solList.sort(function(a, b) { return b.count - a.count; });
+
+  var highIntim = similar.filter(function(p) { return p.intim >= 5; });
+  var highIntimGroup = highIntim.length > 0 ? highIntim.filter(function(p) {
+    return p.solutions.some(function(s) { return s.indexOf("Group") >= 0 || s.indexOf("friends") >= 0 || s.indexOf("buddy") >= 0 || s.indexOf("partner") >= 0 || s.indexOf("Team") >= 0; });
+  }) : [];
+
+  var html = '';
+  html += '<div class="rec-header">What helped people with similar barriers</div>';
+  html += '<div class="rec-match-count"><strong>' + n + ' of 8 participants</strong> share a similar barrier profile to yours.</div>';
+
+  html += '<div class="rec-section">';
+  html += '<div class="rec-section-title">What worked (ranked by how often it helped)</div>';
+  html += '<ul class="rec-list">';
+  solList.forEach(function(s, i) {
+    var pct = Math.round((s.count / n) * 100);
+    var isMajority = pct >= 50;
+    var isTop = i < 3 && pct >= 30;
+    var color = isMajority ? "#1D9E75" : isTop ? "#5DCAA5" : "#B4B2A9";
+    var highlight = isMajority || isTop;
+    html += '<li class="rec-item"><div class="rec-bar-wrap">';
+    html += '<div class="rec-bar-label" style="' + (highlight ? 'color:#2c2c2a' : 'color:#888') + '">' + s.name + (isMajority ? ' <span style="font-size:0.65rem;color:#1D9E75;font-weight:500">majority</span>' : '') + '</div>';
+    html += '<div class="rec-bar-outer"><div class="rec-bar-inner" style="width:' + pct + '%;background:' + color + '"></div></div>';
+    html += '<div class="rec-bar-stat">' + s.count + ' of ' + n + ' participants (' + pct + '%)</div>';
+    html += '</div></li>';
+  });
+  html += '</ul></div>';
+
+  if (highIntim.length > 0 && highIntimGroup.length > 0) {
+    var pct = Math.round((highIntimGroup.length / highIntim.length) * 100);
+    html += '<div class="rec-insight">';
+    html += '<strong>' + pct + '% of participants with high gym intimidation</strong> found that social exercise settings (group classes, exercising with friends, or team sports) helped them overcome it. None of them said going alone was the answer.';
+    html += '</div>';
+  }
+
+  var userBarrier = user.intim >= 6 ? "gym intimidation" : user.social >= 6 ? "social media's impact on body image" : user.judge >= 6 ? "fear of being judged" : user.conf <= 4 ? "low gym confidence" : null;
+  if (userBarrier) {
+    var bgList = similar.map(function(p) { return p.background; });
+    var uniqueBg = bgList.filter(function(v, i, a) { return a.indexOf(v) === i; });
+    html += '<div class="rec-insight" style="background:#FAEEDA;color:#633806;margin-top:10px">';
+    html += 'Your biggest barrier appears to be <strong>' + userBarrier + '</strong>. ';
+    html += 'Similar participants had backgrounds in: ' + uniqueBg.join("; ") + '. ';
+    html += 'Their past experience with structured physical activity helped them find exercise formats that felt comfortable.';
+    html += '</div>';
+  }
+
+  panel.innerHTML = html;
+}
+
+function update() {
+  var user = getUserProfile();
+  var similar = findSimilar(user, 8);
+  var similarIds = similar.map(function(p) { return p.id; });
+  drawRadar(user, similarIds);
+  buildRecommendations(user, similar);
+}
+
+update();
+window.addEventListener("resize", update);
+</script>
+</body>
+</html>
