@@ -25,7 +25,6 @@
 
   .zone-label { position:absolute; pointer-events:none; z-index:15; text-align:center; }
   .zone-label-name { font-size:11px; font-weight:500; line-height:1.4; }
-  .zone-label-sub { font-size:9px; opacity:0.5; margin-top:2px; }
 
   .tooltip { position:absolute; background:white; border:0.5px solid #d3d1c7; border-radius:10px;
     padding:12px 16px; font-size:0.8rem; line-height:1.6; max-width:240px; opacity:0;
@@ -33,6 +32,14 @@
     box-shadow:0 4px 16px rgba(0,0,0,0.06); }
   .tip-title { font-weight:500; margin-bottom:4px; }
   .tip-cta { font-size:0.72rem; margin-top:6px; font-weight:500; }
+
+  .preview-img { position:absolute; width:280px; border-radius:10px; border:1px solid #d3d1c7;
+    box-shadow:0 8px 24px rgba(0,0,0,0.1); opacity:0; pointer-events:none; transition:opacity 0.2s;
+    z-index:25; }
+
+  .click-label { position:absolute; pointer-events:none; z-index:16; text-align:center;
+    font-size:0.78rem; font-weight:600; letter-spacing:0.3px; opacity:0; transition:opacity 0.25s; }
+  .click-label span { padding:5px 14px; border-radius:14px; }
 
   .prompt { text-align:center; font-size:0.8rem; color:#b4b2a9; margin-top:12px; }
 
@@ -48,7 +55,8 @@
 
   <div class="hero">
     <h1>What keeps people from the gym?</h1>
-    <p>We interviewed 8 people about their barriers to physical activity.<br>Click any region to explore the data behind it.</p>
+    <p>We interviewed 8 people about their barriers to physical activity.</p>
+    <p style="margin-top:10px;font-size:1rem;font-weight:600;color:#2c2c2a;">Hover over a barrier to preview — click to explore</p>
   </div>
 
   <div class="venn-wrap" id="venn">
@@ -80,10 +88,9 @@
       <div class="circle-label-count" style="color:#185FA5;font-size:10px;">6 of 8 participants</div>
     </div>
 
-    <!-- Overlap label (no background div needed) -->
+    <!-- Overlap label -->
     <div class="zone-label" style="left:265px;top:210px;width:90px;">
       <div class="zone-label-name" style="color:#791F1F;">Time vs.<br>mental tradeoff</div>
-      <div class="zone-label-sub" style="color:#A32D2D;">Click to explore</div>
     </div>
 
     <!-- Sub-labels for non-overlap zones -->
@@ -92,6 +99,26 @@
     </div>
     <div class="zone-label" style="left:375px;top:425px;width:130px;">
       <div class="zone-label-name" style="color:#185FA5;">Scheduling, cost,<br>proximity</div>
+    </div>
+
+    <!-- Preview images -->
+    <img class="preview-img" id="prevMental" src="preview_assessment.png" alt="">
+    <img class="preview-img" id="prevTime" src="preview_map.png" alt="">
+    <img class="preview-img" id="prevAccess" src="preview_map.png" alt="">
+    <img class="preview-img" id="prevOverlap" src="preview_energy.png" alt="">
+
+    <!-- Click to explore labels -->
+    <div class="click-label" id="ctaMental" style="left:50px;top:85px;width:310px;height:310px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:40px;padding-right:80px;">
+      <span style="background:rgba(212,83,126,0.18);color:#72243E;">Click to explore &#8594;</span>
+    </div>
+    <div class="click-label" id="ctaTime" style="left:260px;top:65px;width:350px;height:350px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:40px;padding-left:80px;">
+      <span style="background:rgba(55,138,221,0.15);color:#0C447C;">Click to explore &#8594;</span>
+    </div>
+    <div class="click-label" id="ctaAccess" style="left:420px;top:200px;width:155px;height:155px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;">
+      <span style="background:rgba(55,138,221,0.18);color:#0C447C;font-size:0.68rem;">Click to explore &#8594;</span>
+    </div>
+    <div class="click-label" id="ctaOverlap" style="left:265px;top:210px;width:90px;margin-top:40px;">
+      <span style="background:rgba(121,31,31,0.15);color:#791F1F;">Click to explore &#8594;</span>
     </div>
 
     <div class="tooltip" id="tooltip"></div>
@@ -116,27 +143,41 @@ var tips = {
   mental: {
     title: "Mental / intrinsic barriers",
     titleColor: "#72243E",
-    text: "Body image, social media influence, gym intimidation, low motivation. Felt by all 8 participants — yet rarely named as their biggest obstacle.",
-    cta: "Click to explore what works", ctaColor: "#72243E", link: "self_assessment.html",
+    text: "Body image, social media influence, gym intimidation, low motivation. Felt by all 8 participants \u2014 yet rarely named as their biggest obstacle.",
+    cta: "Explore what works for people like you", ctaColor: "#72243E", link: "self_assessment.html",
   },
   time: {
     title: "Time barriers",
     titleColor: "#0C447C",
     text: "Scheduling conflicts, energy limitations, competing priorities. Named as the top barrier by 5 of 8 participants.",
-    cta: "Click to explore the accessibility map", ctaColor: "#0C447C", link: "boston_gym_map_v4.html",
+    cta: "Explore the accessibility map", ctaColor: "#0C447C", link: "boston_gym_map_v4.html",
   },
   access: {
     title: "Accessibility / distance",
     titleColor: "#0C447C",
-    text: "Cost, proximity to gyms, transit access. A subset of time/effort — if a gym is far or expensive, it costs more time and energy to reach.",
-    cta: "Click to explore the accessibility map", ctaColor: "#0C447C", link: "boston_gym_map_v4.html",
+    text: "Cost, proximity to gyms, transit access. A subset of time/effort \u2014 if a gym is far or expensive, it costs more time and energy to reach.",
+    cta: "Explore the accessibility map", ctaColor: "#0C447C", link: "boston_gym_map_v4.html",
   },
   overlap: {
     title: "Where time meets mindset",
     titleColor: "#791F1F",
-    text: "Social media drains time at almost no energy cost — but leaves people feeling worse. Exercise uses real energy but improves mood. The tradeoff is the insight.",
-    cta: "Click to explore the energy timeline", ctaColor: "#791F1F", link: "energy_timeline_v5.html",
+    text: "Social media drains time at almost no energy cost \u2014 but leaves people feeling worse. Exercise uses real energy but improves mood. The tradeoff is the insight.",
+    cta: "Explore the energy timeline", ctaColor: "#791F1F", link: "energy_timeline_v5.html",
   },
+};
+
+var previewEls = {
+  mental: document.getElementById("prevMental"),
+  time: document.getElementById("prevTime"),
+  access: document.getElementById("prevAccess"),
+  overlap: document.getElementById("prevOverlap"),
+};
+
+var ctaEls = {
+  mental: document.getElementById("ctaMental"),
+  time: document.getElementById("ctaTime"),
+  access: document.getElementById("ctaAccess"),
+  overlap: document.getElementById("ctaOverlap"),
 };
 
 var circles = {
@@ -153,7 +194,6 @@ function getZone(mx, my) {
   var inMental = dist(mx, my, circles.mental.cx, circles.mental.cy) <= circles.mental.r;
   var inTime = dist(mx, my, circles.time.cx, circles.time.cy) <= circles.time.r;
   var inAccess = dist(mx, my, circles.access.cx, circles.access.cy) <= circles.access.r;
-
   if (inAccess) return "access";
   if (inMental && inTime) return "overlap";
   if (inTime) return "time";
@@ -163,6 +203,14 @@ function getZone(mx, my) {
 
 var tt = document.getElementById("tooltip");
 var venn = document.getElementById("venn");
+var lastZone = null;
+
+function hideAll() {
+  Object.keys(previewEls).forEach(function(k) {
+    previewEls[k].style.opacity = 0;
+    ctaEls[k].style.opacity = 0;
+  });
+}
 
 venn.addEventListener("mousemove", function(e) {
   var vr = venn.getBoundingClientRect();
@@ -170,11 +218,17 @@ venn.addEventListener("mousemove", function(e) {
   var my = e.clientY - vr.top;
   var zone = getZone(mx, my);
 
+  if (zone !== lastZone) {
+    hideAll();
+    lastZone = zone;
+  }
+
   if (zone) {
     var d = tips[zone];
+
     var html = '<div class="tip-title" style="color:' + d.titleColor + '">' + d.title + '</div>';
     html += '<div>' + d.text + '</div>';
-    if (d.cta) html += '<div class="tip-cta" style="color:' + d.ctaColor + '">' + d.cta + ' \u2192</div>';
+    html += '<div class="tip-cta" style="color:' + d.ctaColor + '">' + d.cta + ' \u2192</div>';
     tt.innerHTML = html;
     tt.style.opacity = 1;
     var x = e.clientX - vr.left + 16;
@@ -183,15 +237,31 @@ venn.addEventListener("mousemove", function(e) {
     if (y < 0) y = 10;
     tt.style.left = x + "px";
     tt.style.top = y + "px";
-    venn.style.cursor = d.link ? "pointer" : "default";
+
+    var prev = previewEls[zone];
+    var prevX = e.clientX - vr.left - 140;
+    var prevY = e.clientY - vr.top + 30;
+    if (prevX < 10) prevX = 10;
+    if (prevX + 280 > vr.width) prevX = vr.width - 290;
+    if (prevY + 200 > 500) prevY = e.clientY - vr.top - 210;
+    prev.style.left = prevX + "px";
+    prev.style.top = prevY + "px";
+    prev.style.opacity = 1;
+
+    ctaEls[zone].style.opacity = 1;
+
+    venn.style.cursor = "pointer";
   } else {
     tt.style.opacity = 0;
+    hideAll();
     venn.style.cursor = "default";
   }
 });
 
 venn.addEventListener("mouseleave", function() {
   tt.style.opacity = 0;
+  hideAll();
+  lastZone = null;
 });
 
 venn.addEventListener("click", function(e) {
@@ -199,9 +269,7 @@ venn.addEventListener("click", function(e) {
   var mx = e.clientX - vr.left;
   var my = e.clientY - vr.top;
   var zone = getZone(mx, my);
-  if (zone && tips[zone].link) {
-    window.location.href = tips[zone].link;
-  }
+  if (zone && tips[zone].link) window.location.href = tips[zone].link;
 });
 </script>
 </body>
