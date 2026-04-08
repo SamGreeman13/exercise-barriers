@@ -13,7 +13,7 @@
 
   .layout { display:flex; gap:2rem; flex-wrap:wrap; }
   .left { flex:0 0 320px; }
-  .right { flex:1; min-width:360px; }
+  .right { flex:1; min-width:360px; display:flex; flex-direction:column; align-items:center; }
 
   .sl { font-size:0.7rem; font-weight:500; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin:16px 0 8px; }
   .sl:first-child { margin-top:0; }
@@ -98,19 +98,15 @@
         <div class="q-row"><input type="range" min="1" max="10" value="5" id="qPartner" oninput="update()"><span class="q-val" id="vPartner">5</span></div>
         <div class="q-ends"><span>Prefer alone</span><span>Need a partner</span></div>
       </div>
+    </div>
 
+    <div class="right">
       <div class="sl">Your profile vs. participants</div>
       <div class="radar-wrap"><canvas id="radar" width="420" height="420"></canvas></div>
       <div class="radar-legend">
         <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#2c2c2a"></span>You</div>
-        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#1D9E75"></span>Similar participants</div>
-        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#d3d1c7"></span>Other participants</div>
+        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#1D9E75"></span>Average of similar participants</div>
       </div>
-    </div>
-
-    <div class="right">
-      <div class="sl">What the evidence says</div>
-      <div class="rec-panel" id="recPanel"></div>
     </div>
   </div>
 </div>
@@ -180,7 +176,7 @@ function findSimilar(u, threshold) {
   return similar.map(function(x) { return x.p; });
 }
 
-function drawRadar(user, similarIds) {
+function drawRadar(user, similar) {
   var cv = document.getElementById("radar");
   var ctx = cv.getContext("2d");
   var dpr = window.devicePixelRatio || 1;
@@ -220,31 +216,54 @@ function drawRadar(user, similarIds) {
     });
   }
 
-  function drawProfile(vals, color, alpha, lineW, fill) {
+  // Draw average of similar participants as single green area
+  if (similar.length > 0) {
+    var avgVals = [0,0,0,0,0];
+    similar.forEach(function(p) {
+      avgVals[0] += p.intim;
+      avgVals[1] += p.social;
+      avgVals[2] += p.conf;
+      avgVals[3] += p.judge;
+      avgVals[4] += p.partner;
+    });
+    for (var i = 0; i < 5; i++) avgVals[i] /= similar.length;
+
     ctx.beginPath();
-    ctx.strokeStyle = color; ctx.lineWidth = lineW; ctx.globalAlpha = alpha;
     for (var i = 0; i <= n; i++) {
       var idx = i % n;
       var a = (Math.PI*2/n)*idx - Math.PI/2;
-      var r = (vals[idx]/10)*maxR;
+      var r = (avgVals[idx]/10)*maxR;
       if (i===0) ctx.moveTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
       else ctx.lineTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
     }
+    ctx.fillStyle = "#1D9E75";
+    ctx.globalAlpha = 0.15;
+    ctx.fill();
+    ctx.globalAlpha = 0.5;
+    ctx.strokeStyle = "#1D9E75";
+    ctx.lineWidth = 2;
     ctx.stroke();
-    if (fill) { ctx.fillStyle = color; ctx.globalAlpha = alpha * 0.3; ctx.fill(); }
     ctx.globalAlpha = 1;
   }
 
-  participants.forEach(function(p) {
-    var isSimilar = similarIds.indexOf(p.id) >= 0;
-    var vals = [p.intim, p.social, p.conf, p.judge, p.partner];
-    var color = isSimilar ? "#1D9E75" : "#d3d1c7";
-    var alpha = isSimilar ? 0.6 : 0.3;
-    drawProfile(vals, color, alpha, isSimilar ? 2 : 1, isSimilar);
-  });
-
+  // Draw user profile
   var uVals = [user.intim, user.social, user.conf, user.judge, user.partner];
-  drawProfile(uVals, "#2c2c2a", 1, 3, true);
+  ctx.beginPath();
+  for (var i = 0; i <= n; i++) {
+    var idx = i % n;
+    var a = (Math.PI*2/n)*idx - Math.PI/2;
+    var r = (uVals[idx]/10)*maxR;
+    if (i===0) ctx.moveTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
+    else ctx.lineTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
+  }
+  ctx.fillStyle = "#2c2c2a";
+  ctx.globalAlpha = 0.08;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.strokeStyle = "#2c2c2a";
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
   for (var i = 0; i < n; i++) {
     var a = (Math.PI*2/n)*i - Math.PI/2;
     var r = (uVals[i]/10)*maxR;
@@ -323,9 +342,7 @@ function buildRecommendations(user, similar) {
 function update() {
   var user = getUserProfile();
   var similar = findSimilar(user, 8);
-  var similarIds = similar.map(function(p) { return p.id; });
-  drawRadar(user, similarIds);
-  buildRecommendations(user, similar);
+  drawRadar(user, similar);
 }
 
 update();
