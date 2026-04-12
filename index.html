@@ -7,13 +7,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: "Nunito", sans-serif; background:#fafaf8; color:#2c2c2a; }
+  body { font-family: "Nunito", sans-serif; background:linear-gradient(to right, #faf4f7, #f4f7fb); min-height:100vh; color:#2c2c2a; }
   .page { max-width:900px; margin:0 auto; padding:2rem; }
-  .hero { text-align:center; margin-bottom:1.5rem; }
+  .hero { text-align:center; margin-bottom:1.5rem; background:rgba(255,255,255,0.35); padding:1.5rem 2rem; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
   .hero h1 { font-size:2rem; font-weight:500; margin-bottom:6px; }
   .hero p { font-size:0.9rem; color:#888; line-height:1.6; }
 
-  .venn-wrap { position:relative; width:100%; max-width:720px; margin:0 auto; height:500px; }
+  .venn-wrap { position:relative; width:100%; max-width:720px; margin:0 auto; height:430px; }
 
   .venn-circle { position:absolute; border-radius:50%; transition:transform 0.25s ease; }
   .venn-circle.hovered { transform:scale(1.07); filter:saturate(2.65) brightness(0.95); transition:transform 0.2s ease, filter 0.2s ease; }
@@ -40,11 +40,11 @@
 
   .prompt { text-align:center; font-size:0.8rem; color:#b4b2a9; margin-top:12px; }
 
-  .about { max-width:640px; margin:2rem auto 0; padding-top:1.5rem; border-top:1px solid #e8e7e2; }
+  .about { max-width:640px; margin:2rem auto 0; padding:1.5rem 2rem; background:rgba(255, 255, 255, 0.35); border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
   .about h2 { font-size:1.1rem; font-weight:500; margin-bottom:8px; }
   .about p { font-size:0.85rem; color:#666; line-height:1.7; margin-bottom:12px; }
 
-  .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#b4b2a9; border-top:1px solid #e8e7e2; margin-top:2rem; }
+  .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#666; background:rgba(255, 255, 255, 0.2); margin-top:2rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
 </style>
 </head>
 <body>
@@ -54,7 +54,7 @@
     <h1>What keeps people from the gym?</h1>
     <p>We interviewed 8 people about their barriers to physical activity.</p>
   </div>
-  <div style="text-align:center;margin-bottom:12px;padding:10px 20px;background:rgba(55,138,221,0.06);border-radius:10px;max-width:720px;margin-left:auto;margin-right:auto;">
+  <div style="text-align:center;margin-bottom:12px;padding:10px 20px;background:rgba(255,255,255,0.35);border-radius:12px;max-width:720px;margin-left:auto;margin-right:auto;box-shadow:0 1px 4px rgba(0,0,0,0.16);">
     <span style="font-size:1.05rem;font-weight:600;color:#2c2c2a;">Hover over a barrier to preview &mdash; click to explore</span>
   </div>
   <div class="venn-wrap" id="venn">
@@ -98,20 +98,20 @@
     <img class="preview-img" id="prevOverlap" src="preview_energy.png" alt="">
     <div class="preview-cap" id="capMental">Explore what works for people with similar barriers</div>
     <div class="preview-cap" id="capTime">See how your daily energy budget leaves room for exercise</div>
-    <div class="preview-cap" id="capAccess">Find gyms within walking distance and transit access</div>
+    <div class="preview-cap" id="capAccess">Find gyms within walking distance and transit access, and compare accessibility scores</div>
     <div class="preview-cap" id="capOverlap">See how your daily energy budget leaves room for exercise</div>
   </div>
 
   <div class="about">
     <h2>About this project</h2>
-    <p>This research explores the common barriers that prevent people from going to the gym, drawing on qualitative interviews with 8 participants aged 18–30 in the Greater Boston area. We examined psychological barriers like body image and gym intimidation alongside logistical barriers like cost, time, and proximity.</p>
-    <p>What we found surprised us: the barriers people <em>feel</em> most strongly — body image, social media's influence on self-perception — are rarely the ones they <em>name</em> as their biggest obstacle. Instead, time and cost dominate the conversation, while deeper psychological barriers operate quietly underneath. The overlap between these two categories is where the most interesting insights live.</p>
+    <p>We interviewed 8 people living in Boston and its surrounding areas about what keeps them from starting or maintaining a fitness routine. Our conversations explored the feelings they associate with the gym and exercise, how they spend their free time, and the mental and psychological hurdles they face.</p>
+    <p>Most participants named extrinsic barriers — lack of time, energy, or accessible gyms — as their primary obstacles. But the barriers that carried the strongest negative emotions were intrinsic: social media's influence on self-perception, body image concerns, and gym intimidation. These rarely came up as the "main" reason, yet they shaped how people talked about exercise more than anything else.</p>
+    <p>The most interesting finding was how these two categories interact. Intrinsic barriers don't just exist alongside extrinsic ones — they can create them. Someone who feels intimidated by the gym doesn't just have a psychological barrier; they now have an accessibility problem, because the nearest gym might as well not exist. That interplay is what the visualizations above are designed to make visible.</p>  
   </div>
-
 </div>
 
 <div class="footer">
-  CS 7250 Information Visualization · Northeastern University · 2026
+  T&#233a Adams · Sam Greeman · Northeastern University
 </div>
 
 <script>
@@ -195,7 +195,7 @@ venn.addEventListener("mousemove", function(e) {
     var prevY = e.clientY - vr.top + 20;
     if (prevX < 10) prevX = 10;
     if (prevX + 180 > vr.width) prevX = vr.width - 190;
-    if (prevY + 120 > 500) prevY = e.clientY - vr.top - 130;
+    if (prevY + 120 > 430) prevY = e.clientY - vr.top - 130;
     prev.style.left = prevX + "px";
     prev.style.top = prevY + "px";
     prev.style.opacity = 1;

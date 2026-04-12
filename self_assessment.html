@@ -7,19 +7,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: "Nunito", sans-serif; background:#fafaf8; color:#2c2c2a; }
+  body { font-family: "Nunito", sans-serif; background:linear-gradient(to right, #faf4f7, #f4f7fb); min-height:100vh; color:#2c2c2a; }
   .ctn { max-width:1000px; margin:0 auto; padding:2rem; }
+  .back-nav { margin-bottom:1rem; }
+  .back-nav a { font-size:0.78rem; color:#888; text-decoration:none; display:inline-flex; align-items:center; gap:4px; }
+  .back-nav a:hover { color:#2c2c2a; }
+  .header-block { background:rgba(255,255,255,0.35); padding:1.2rem 1.5rem; border-radius:12px; margin-bottom:1.5rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
+  .back-nav { margin-bottom:1rem; }
+  .back-nav a { font-size:0.78rem; color:#888; text-decoration:none; display:inline-flex; align-items:center; gap:4px; }
+  .back-nav a:hover { color:#2c2c2a; }
   h1 { font-size:1.5rem; font-weight:500; margin-bottom:4px; }
-  .sub { font-size:0.85rem; color:#888; margin-bottom:2rem; line-height:1.6; }
+  .sub { font-size:0.85rem; color:#888; margin-bottom:0; line-height:1.6; }
 
   .layout { display:flex; gap:2rem; flex-wrap:wrap; align-items:flex-start; }
-  .left { flex:0 0 320px; }
-  .right { flex:1; min-width:380px; display:flex; flex-direction:column; align-items:center; }
+  .left { flex:0 0 320px; background:rgba(255,255,255,0.35); padding:16px 20px; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
+  .right { flex:1; min-width:380px; display:flex; flex-direction:column; align-items:center; background:rgba(255,255,255,0.35); padding:16px 20px; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
 
   .sl { font-size:0.7rem; font-weight:500; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin:16px 0 8px; }
   .sl:first-child { margin-top:0; }
 
-  .q { margin-bottom:14px; }
+  .q { margin-bottom:14px; background:rgba(255,255,255,0.5); padding:10px 12px; border-radius:8px; border:1px solid rgba(0,0,0,0.04); }
   .q-label { font-size:0.82rem; font-weight:500; margin-bottom:2px; }
   .q-row { display:flex; align-items:center; gap:8px; }
   .q-row input { flex:1; }
@@ -35,19 +42,23 @@
 
   .click-hint { font-size:0.72rem; color:#b4b2a9; text-align:center; margin-bottom:12px; }
 
-  .tip-card { background:#fff; border:1px solid #d3d1c7; border-radius:10px; padding:14px 18px;
+  .tip-card { background:rgba(255,255,255,0.5); border:1px solid rgba(0,0,0,0.04); border-radius:12px; padding:14px 18px;
     font-size:0.8rem; line-height:1.6; width:100%; max-width:460px; display:none;
-    box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+    box-shadow:0 1px 4px rgba(0,0,0,0.16); }
   .tip-card-title { font-weight:600; margin-bottom:6px; color:#2c2c2a; }
   .tip-card-sub { font-size:0.72rem; color:#888; margin-bottom:10px; }
   .tip-sol { padding:4px 0; font-size:0.78rem; }
   .tip-sol-name { font-weight:500; }
+  .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#666; background:rgba(255,255,255,0.35); margin-top:2rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
 </style>
 </head>
 <body>
 <div class="ctn">
-  <h1>What works for people like you?</h1>
-  <p class="sub">Rate how you feel about each dimension, then click any point on the radar chart to see how participants overcame that barrier.</p>
+  <div class="back-nav"><a href="index.html">← Back to overview</a></div>
+  <div class="header-block">
+    <h1>What works for people like you?</h1>
+    <p class="sub">Rate how you feel about each dimension, then click any point on the radar chart to see how participants overcame that barrier.</p>
+  </div>
 
   <div class="layout">
     <div class="left">
@@ -89,14 +100,17 @@
       <div class="radar-wrap"><canvas id="radar" width="460" height="460"></canvas></div>
       <div class="radar-legend">
         <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#2c2c2a"></span>You</div>
-        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#1D9E75"></span>Average of all participants</div>
+        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#D4537E"></span>Average of all participants</div>
       </div>
-      <div style="text-align:center;margin-bottom:12px;padding:8px 16px;background:rgba(55,138,221,0.06);border-radius:8px;font-size:0.82rem;font-weight:600;color:#2c2c2a;">Click any point on your profile to see how others overcame that barrier</div>
+      <div style="text-align:center;margin-bottom:12px;padding:8px 16px;background:rgba(255,255,255,0.5);border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.16);font-size:0.82rem;font-weight:600;color:#2c2c2a;">Click any point on your profile to see how others overcame that barrier</div>
       <div class="tip-card" id="tipCard"></div>
     </div>
   </div>
 </div>
-
+</div>
+<div class="footer">
+  T&#233a Adams · Sam Greeman · Northeastern University
+</div>
 <script>
 var axisLabels = ["Gym\nintimidation","Social media\nimpact","Gym\nconfidence","Fear of\njudgment","Need a\npartner"];
 var axisNames = ["Gym intimidation","Social media impact","Gym confidence","Fear of judgment","Need a partner"];
@@ -248,11 +262,11 @@ function drawRadar(user) {
     if (i===0) ctx.moveTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
     else ctx.lineTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
   }
-  ctx.fillStyle = "#1D9E75";
+  ctx.fillStyle = "#D4537E";
   ctx.globalAlpha = 0.15;
   ctx.fill();
   ctx.globalAlpha = 0.5;
-  ctx.strokeStyle = "#1D9E75";
+  ctx.strokeStyle = "#D4537E";
   ctx.lineWidth = 2;
   ctx.stroke();
   ctx.globalAlpha = 1;
@@ -296,7 +310,7 @@ function showBarrierTip(idx) {
   html += '<div class="tip-card-sub">' + b.desc + '</div>';
 
   b.solutions.forEach(function(s, i) {
-    html += '<div class="tip-sol"><span style="color:#1D9E75;font-weight:600;margin-right:6px;">' + (i+1) + '.</span>';
+    html += '<div class="tip-sol"><span style="color:#D4537E;font-weight:600;margin-right:6px;">' + (i+1) + '.</span>';
     html += '<span class="tip-sol-name">' + s.name + '</span></div>';
   });
 

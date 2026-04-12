@@ -7,13 +7,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:"Nunito",sans-serif; background:#fafaf8; color:#2c2c2a; }
+  body { font-family:"Nunito",sans-serif; background:linear-gradient(to right, #faf4f7, #f4f7fb); min-height:100vh; color:#2c2c2a; }
   .ctn { max-width:1300px; margin:0 auto; padding:1.5rem; }
+  .back-nav { margin-bottom:1rem; }
+  .back-nav a { font-size:0.78rem; color:#888; text-decoration:none; display:inline-flex; align-items:center; gap:4px; }
+  .back-nav a:hover { color:#2c2c2a; }
+  .header-block { background:rgba(255,255,255,0.35); padding:1.2rem 1.5rem; border-radius:12px; margin-bottom:1rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
   h1 { font-size:1.5rem; font-weight:500; margin-bottom:4px; }
-  .sub { font-size:0.85rem; color:#888; margin-bottom:1rem; line-height:1.6; }
+  .sub { font-size:0.85rem; color:#888; margin-bottom:0.5rem; line-height:1.6; }
   .info-tog { font-size:0.78rem; color:#0C447C; cursor:pointer; text-decoration:underline; margin-bottom:1rem; display:inline-block; }
-  .info-p { display:none; background:#fff; border:1px solid #e8e7e2; border-radius:10px; padding:16px 20px; margin-bottom:1.5rem; font-size:0.8rem; line-height:1.7; color:#444; }
-  .info-p.open { display:block; }
+  .info-p { display:none; background:rgba(255,255,255,0.35); border:none; border-radius:12px; padding:16px 20px; margin-bottom:1.5rem; font-size:0.8rem; line-height:1.7; color:#444; box-shadow:0 1px 4px rgba(0,0,0,0.16); }  .info-p.open { display:block; }
   .info-p h3 { font-size:0.85rem; font-weight:500; color:#2c2c2a; margin:10px 0 4px; }
   .info-p h3:first-child { margin-top:0; }
   .info-p table { width:100%; border-collapse:collapse; margin:8px 0; font-size:0.75rem; }
@@ -21,37 +24,37 @@
   .info-p td { border-bottom:1px solid #e8e7e2; padding:4px 8px; }
   .info-p .tot td { font-weight:500; border-top:2px solid #2c2c2a; }
   .lay { display:flex; gap:1.5rem; flex-wrap:wrap; }
-  .cp { flex:0 0 260px; }
+  .cp { flex:0 0 300px; background:rgba(255,255,255,0.35); padding:14px 16px; border-radius:12px; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
   .chp { flex:1; min-width:540px; }
   .sl { font-size:0.7rem; font-weight:500; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin:14px 0 8px; }
   .sl:first-child { margin-top:0; }
   .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
-  .act { margin-bottom:8px; padding:8px 12px; background:#fff; border-radius:8px; border:1px solid #e8e7e2; }
+  .act { margin-bottom:8px; padding:8px 12px; background:rgba(255,255,255,0.5); border-radius:8px; border:1px solid rgba(0,0,0,0.04); }
   .act-h { display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; }
   .act-l { font-size:0.78rem; font-weight:500; display:flex; align-items:center; gap:6px; }
   .act-m { font-size:0.68rem; color:#888; }
   .act-row { display:flex; align-items:center; gap:8px; }
   .act-row input { flex:1; }
   .act-v { font-size:0.78rem; font-weight:500; min-width:32px; text-align:right; }
-  .bc { padding:8px 12px; background:#fff; border-radius:8px; border:1px solid #e8e7e2; margin-bottom:8px; }
+  .bc { padding:8px 12px; background:rgba(255,255,255,0.5); border-radius:8px; border:1px solid rgba(0,0,0,0.04); margin-bottom:8px; }
   .bc-h { display:flex; justify-content:space-between; font-size:0.78rem; font-weight:500; margin-bottom:3px; }
   .bc-lb { display:flex; justify-content:space-between; font-size:0.62rem; color:#888; }
   input[type=range] { height:4px; -webkit-appearance:none; appearance:none; background:#e8e7e2; border-radius:3px; outline:none; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:#fff; border:2px solid #888; cursor:pointer; }
-  .sc { padding:8px 12px; background:#fff; border-radius:8px; border:1px solid #e8e7e2; margin-bottom:6px; }
+  .sc { padding:8px 12px; background:rgba(255,255,255,0.5); border-radius:8px; border:1px solid rgba(0,0,0,0.04); margin-bottom:6px; }
   .sc-h { display:flex; justify-content:space-between; font-size:0.76rem; font-weight:500; margin-bottom:3px; }
   .sb { height:8px; border-radius:4px; background:#e8e7e2; overflow:hidden; }
   .sf { height:100%; border-radius:4px; transition:width 0.3s; }
   .sm { font-size:0.7rem; margin-top:4px; line-height:1.4; }
-  .eb { padding:10px 12px; background:#fff; border-radius:8px; border:2px dashed #1D9E75; margin-top:6px; }
+  .eb { padding:10px 12px; background:rgba(255,255,255,0.5); border-radius:8px; border:2px dashed #1D9E75; margin-top:6px; }
   .eb-t { font-size:0.78rem; font-weight:500; color:#1D9E75; margin-bottom:3px; }
   .eb-s { font-size:1.2rem; font-weight:500; color:#1D9E75; }
   .eb-x { font-size:0.74rem; color:#666; line-height:1.5; margin-top:3px; }
-  .cw { background:#fff; border-radius:10px; border:1px solid #e8e7e2; padding:14px; }
+  .cw { background:rgba(255,255,255,0.35); border-radius:12px; border:none; padding:14px; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
   .ct { font-size:0.85rem; font-weight:500; margin-bottom:2px; }
   .cs { font-size:0.72rem; color:#888; margin-bottom:8px; }
   .sort-btns { display:flex; gap:6px; margin-bottom:10px; }
-  .sort-btn { padding:5px 12px; border-radius:6px; border:1px solid #d3d1c7; background:#fff; font-size:0.72rem; font-weight:500; cursor:pointer; font-family:"Nunito",sans-serif; color:#888; transition:all 0.15s; }
+  .sort-btn { padding:5px 12px; border-radius:6px; border:1px solid rgba(0,0,0,0.06); background:rgba(255,255,255,0.5); font-size:0.72rem; font-weight:500; cursor:pointer; font-family:"Nunito",sans-serif; color:#888; transition:all 0.15s; }
   .sort-btn.active { background:#2c2c2a; color:#fff; border-color:#2c2c2a; }
   .sort-btn:hover:not(.active) { border-color:#888; color:#2c2c2a; }
   #cv { width:100%; }
@@ -62,13 +65,17 @@
   .ins.pos { background:#EAF3DE; color:#27500A; }
   .ins.wrn { background:#FAEEDA; color:#633806; }
   .ins.neg { background:#FCEBEB; color:#791F1F; }
+  .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#666; background:rgba(255,255,255,0.35); margin-top:2rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
 </style>
 </head>
 <body>
 <div class="ctn">
-  <h1>Where does your energy go?</h1>
-  <p class="sub">Adjust how many hours you spend on each activity. The chart shows your energy accumulating — the gap below the ceiling is your exercise headroom.</p>
-  <span class="info-tog" onclick="document.getElementById('ip').classList.toggle('open')">What are METs? Read more about this visualization</span>
+  <div class="back-nav"><a href="index.html">← Back to overview</a></div>
+  <div class="header-block">
+    <h1>Where does your energy go?</h1>
+    <p class="sub">Adjust how many hours you spend on each activity. The chart shows your energy accumulating — the gap below the ceiling is your exercise headroom.</p>
+    <span class="info-tog" onclick="document.getElementById('ip').classList.toggle('open')">What are METs? Read more about this visualization</span>
+  </div>
   <div class="info-p" id="ip">
     <h3>What are METs?</h3>
     <p>METs (Metabolic Equivalent of Task) is a way to quantify how much energy is needed to complete a task. It is based on a baseline of 1 MET being equivalent to the energy cost of a person at rest. MET-hours is a measure of total energy volume for any activity.</p>
@@ -106,13 +113,17 @@
         <div class="lr" id="leg"></div>
       </div>
       <div id="iC" class="ins pos" style="display:none"></div>
-      <div style="margin-top:12px;padding:14px 16px;background:#fff;border:1px solid #e8e7e2;border-radius:10px;font-size:0.78rem;line-height:1.7;color:#444;">
+      <div style="margin-top:12px;padding:14px 16px;background:rgba(255,255,255,0.35);border:none;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.16);font-size:0.78rem;line-height:1.7;color:#444;">
         <div style="font-weight:500;color:#2c2c2a;margin-bottom:6px;">What our interviewees said</div>
         <p style="margin-bottom:8px;">All 8 participants described negative feelings about social media — yet spent 2–3 hours on it daily at almost no energy cost (~1.15 METs). One called it <span style="color:#D4537E;font-style:italic;">"kind of like a drug"</span>, describing the distress of giving time and energy to content they knew was meaningless. Another said social media left them <span style="color:#D4537E;font-style:italic;">"comparing myself to people I don't even know"</span>, while a third described a cycle of <span style="color:#D4537E;font-style:italic;">"scrolling for an hour and then feeling worse about myself than before I picked up my phone."</span></p>
         <p style="margin-bottom:0;">Exercise told the opposite story. Participants who worked out regularly said it was when they <span style="color:#1D9E75;font-style:italic;">"felt their best"</span> — and the benefits cascaded, with one noting that good mental health from exercise led to <span style="color:#1D9E75;font-style:italic;">"choosing the right foods, being active"</span> in other areas. Others described the gym as <span style="color:#1D9E75;font-style:italic;">"the one part of my day that's just for me"</span> and said group classes made them feel <span style="color:#1D9E75;font-style:italic;">"like everyone is working together on the same activity"</span> — turning a high-energy cost into something they looked forward to. At 5.5 METs for 45 minutes, exercise is the highest-cost activity in most people's day — but the only one that consistently gave something back.</p>
       </div>
     </div>
   </div>
+</div>
+</div>
+<div class="footer">
+  T&#233a Adams · Sam Greeman · Northeastern University
 </div>
 <script>
 var EX_MET=5.5,EX_HRS=0.75,EX_COST=EX_MET*EX_HRS,curSort='meth';
