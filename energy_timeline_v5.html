@@ -8,7 +8,7 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:"Nunito",sans-serif; background:#fafaf8; color:#2c2c2a; }
-  .ctn { max-width:1100px; margin:0 auto; padding:1.5rem; }
+  .ctn { max-width:1300px; margin:0 auto; padding:1.5rem; }
   h1 { font-size:1.5rem; font-weight:500; margin-bottom:4px; }
   .sub { font-size:0.85rem; color:#888; margin-bottom:1rem; line-height:1.6; }
   .info-tog { font-size:0.78rem; color:#0C447C; cursor:pointer; text-decoration:underline; margin-bottom:1rem; display:inline-block; }
@@ -21,8 +21,8 @@
   .info-p td { border-bottom:1px solid #e8e7e2; padding:4px 8px; }
   .info-p .tot td { font-weight:500; border-top:2px solid #2c2c2a; }
   .lay { display:flex; gap:1.5rem; flex-wrap:wrap; }
-  .cp { flex:0 0 310px; }
-  .chp { flex:1; min-width:440px; }
+  .cp { flex:0 0 260px; }
+  .chp { flex:1; min-width:540px; }
   .sl { font-size:0.7rem; font-weight:500; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin:14px 0 8px; }
   .sl:first-child { margin-top:0; }
   .dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
@@ -62,7 +62,6 @@
   .ins.pos { background:#EAF3DE; color:#27500A; }
   .ins.wrn { background:#FAEEDA; color:#633806; }
   .ins.neg { background:#FCEBEB; color:#791F1F; }
-  .qt { margin-top:10px; padding:10px 14px; border-radius:8px; font-size:0.76rem; line-height:1.5; display:none; }
 </style>
 </head>
 <body>
@@ -86,6 +85,13 @@
       <div class="sl">Your daily activities</div>
       <div id="actC"></div>
       <div class="sl">Daily energy budget</div>
+      <span class="info-tog" onclick="document.getElementById('budgetInfo').classList.toggle('open')" style="font-size:0.72rem;margin-bottom:6px;">How to set your budget</span>
+      <div class="info-p" id="budgetInfo">
+        <p><strong>33–37 MET-h:</strong> Sedentary lifestyle — desk job, minimal movement, mostly sitting or driving.</p>
+        <p><strong>38–43 MET-h:</strong> Lightly active — office worker who walks to lunch, does light errands. Most adults fall here.</p>
+        <p><strong>44–50 MET-h:</strong> Moderately active — on your feet for work (retail, teaching), regular exercise.</p>
+        <p><strong>51–58 MET-h:</strong> Very active — construction, nursing, athletics, or multiple workouts per day.</p>
+      </div>
       <div class="bc"><div class="bc-h"><span>Your daily limit</span><span id="bD">40.8 MET-h</span></div><input type="range" id="bS" min="336" max="576" value="408" step="1" oninput="upd()" style="width:100%"><div class="bc-lb"><span>Light (33.6)</span><span>Active (57.6)</span></div></div>
       <div class="sc"><div class="sc-h"><span>Time</span><span id="tV"></span></div><div class="sb"><div class="sf" id="tF"></div></div><div class="sm" id="tM"></div></div>
       <div class="sc"><div class="sc-h"><span>Energy used</span><span id="eV"></span></div><div class="sb"><div class="sf" id="eF"></div></div><div class="sm" id="eM"></div></div>
@@ -96,38 +102,40 @@
         <div class="ct">Your daily energy accumulation</div>
         <div class="cs">Activities stack left to right — the gap below the ceiling is your headroom</div>
         <div class="sort-btns"><span style="font-size:0.7rem;color:#888;align-self:center">Sort by:</span><button class="sort-btn active" id="sM" onclick="setSort('meth')">MET-hours</button><button class="sort-btn" id="sH" onclick="setSort('hours')">Hours</button><button class="sort-btn" id="sI" onclick="setSort('mets')">METs</button></div>
-        <canvas id="cv" height="400"></canvas>
+        <canvas id="cv" height="500"></canvas>
         <div class="lr" id="leg"></div>
       </div>
-      <div class="qt" id="qC"></div>
       <div id="iC" class="ins pos" style="display:none"></div>
+      <div style="margin-top:12px;padding:14px 16px;background:#fff;border:1px solid #e8e7e2;border-radius:10px;font-size:0.78rem;line-height:1.7;color:#444;">
+        <div style="font-weight:500;color:#2c2c2a;margin-bottom:6px;">What our interviewees said</div>
+        <p style="margin-bottom:8px;">All 8 participants described negative feelings about social media — yet spent 2–3 hours on it daily at almost no energy cost (~1.15 METs). One called it <span style="color:#D4537E;font-style:italic;">"kind of like a drug"</span>, describing the distress of giving time and energy to content they knew was meaningless. Another said social media left them <span style="color:#D4537E;font-style:italic;">"comparing myself to people I don't even know"</span>, while a third described a cycle of <span style="color:#D4537E;font-style:italic;">"scrolling for an hour and then feeling worse about myself than before I picked up my phone."</span></p>
+        <p style="margin-bottom:0;">Exercise told the opposite story. Participants who worked out regularly said it was when they <span style="color:#1D9E75;font-style:italic;">"felt their best"</span> — and the benefits cascaded, with one noting that good mental health from exercise led to <span style="color:#1D9E75;font-style:italic;">"choosing the right foods, being active"</span> in other areas. Others described the gym as <span style="color:#1D9E75;font-style:italic;">"the one part of my day that's just for me"</span> and said group classes made them feel <span style="color:#1D9E75;font-style:italic;">"like everyone is working together on the same activity"</span> — turning a high-energy cost into something they looked forward to. At 5.5 METs for 45 minutes, exercise is the highest-cost activity in most people's day — but the only one that consistently gave something back.</p>
+      </div>
     </div>
   </div>
 </div>
 <script>
 var EX_MET=5.5,EX_HRS=0.75,EX_COST=EX_MET*EX_HRS,curSort='meth';
 var acts=[
-  {id:"sleep",label:"Sleep",met:0.95,color:"#534AB7",hours:8,max:12,mood:"neutral",quote:null},
-  {id:"work",label:"Work / school",met:1.8,color:"#378ADD",hours:8,max:12,mood:"neutral",quote:null},
-  {id:"commute",label:"Commute",met:2.0,color:"#85B7EB",hours:1,max:4,mood:"neutral",quote:null},
-  {id:"cooking",label:"Cooking / prep",met:3.3,color:"#EF9F27",hours:0.5,max:3,mood:"slight-pos",quote:{text:"When I am working out lots, when I am getting outside more \u2014 that\u2019s when I feel my best.",attr:"Interviewee 3"}},
-  {id:"eating",label:"Eating",met:1.5,color:"#BA7517",hours:1,max:3,mood:"slight-pos",quote:null},
-  {id:"screen",label:"Social media / TV",met:1.15,color:"#D4537E",hours:2.5,max:8,mood:"negative",quote:{text:"I know a great majority of it is garbage, so it\u2019s this distress of giving my time and energy to it when I could be doing something more productive. It\u2019s kind of like a drug.",attr:"Interviewee 7"}},
+  {id:"sleep",label:"Sleep",met:0.95,color:"#85B7EB",hours:8,max:12,mood:"neutral",quote:null},
+  {id:"screen",label:"Social media / TV",met:1.15,color:"#97C4F0",hours:2.5,max:8,mood:"negative",quote:{text:"I know a great majority of it is garbage, so it\u2019s this distress of giving my time and energy to it when I could be doing something more productive. It\u2019s kind of like a drug.",attr:"Interviewee 7"}},
+  {id:"eating",label:"Eating",met:1.5,color:"#5DCAA5",hours:1,max:3,mood:"slight-pos",quote:null},
   {id:"social",label:"Socializing / leisure",met:1.6,color:"#1D9E75",hours:1,max:4,mood:"positive",quote:{text:"I prefer group fitness classes \u2014 it\u2019s more enjoyable when everyone is working together on the same activity.",attr:"Interviewee 6"}},
-  {id:"chores",label:"Chores / errands",met:3.5,color:"#888780",hours:0.5,max:3,mood:"neutral",quote:null}
+  {id:"work",label:"Work / school",met:1.8,color:"#97C459",hours:8,max:12,mood:"neutral",quote:null},
+  {id:"commute",label:"Commute",met:2.0,color:"#EF9F27",hours:1,max:4,mood:"neutral",quote:null},
+  {id:"cooking",label:"Cooking / prep",met:3.3,color:"#E24B4A",hours:0.5,max:3,mood:"slight-pos",quote:{text:"When I am working out lots, when I am getting outside more \u2014 that\u2019s when I feel my best.",attr:"Interviewee 3"}},
+  {id:"chores",label:"Chores / errands",met:3.5,color:"#A32D2D",hours:0.5,max:3,mood:"neutral",quote:null}
 ];
-var mC={"positive":"#1D9E75","slight-pos":"#97C459","neutral":"#B4B2A9","negative":"#E24B4A"};
-var mO={"positive":0.6,"slight-pos":0.45,"neutral":0.25,"negative":0.55};
 
 function buildC(){var h="";acts.forEach(function(a){h+='<div class="act"><div class="act-h"><span class="act-l"><span class="dot" style="background:'+a.color+'"></span>'+a.label+'</span><span class="act-m">'+a.met+' METs</span></div><div class="act-row"><input type="range" min="0" max="'+(a.max*2)+'" value="'+(a.hours*2)+'" step="1" oninput="chg(\''+a.id+"',this.value)\"><span class=\"act-v\" id=\"v_"+a.id+'">'+a.hours.toFixed(1)+"h</span></div></div>";});document.getElementById("actC").innerHTML=h;}
 function chg(id,val){var a=acts.find(function(x){return x.id===id;});a.hours=val/2;document.getElementById("v_"+id).textContent=a.hours.toFixed(1)+"h";upd();}
 function setSort(s){curSort=s;document.querySelectorAll('.sort-btn').forEach(function(b){b.classList.remove('active');});document.getElementById(s==='meth'?'sM':s==='hours'?'sH':'sI').classList.add('active');upd();}
 function getSorted(){var l=acts.filter(function(a){return a.hours>0;}).map(function(a){return{id:a.id,label:a.label,met:a.met,color:a.color,hours:a.hours,meth:a.hours*a.met,mood:a.mood,quote:a.quote};});if(curSort==='meth')l.sort(function(a,b){return b.meth-a.meth;});else if(curSort==='hours')l.sort(function(a,b){return b.hours-a.hours;});else l.sort(function(a,b){return b.met-a.met;});return l;}
 
-var G={pL:50,pR:16,pT:20,pB:70},mR=[];
+var G={pL:50,pR:16,pT:20,pB:35};
 function draw(sorted,budget){
   var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),dpr=window.devicePixelRatio||1,r=cv.getBoundingClientRect();
-  cv.width=r.width*dpr;cv.height=400*dpr;ctx.scale(dpr,dpr);var w=r.width,h=400,cW=w-G.pL-G.pR,cH=h-G.pT-G.pB;
+  cv.width=r.width*dpr;cv.height=500*dpr;ctx.scale(dpr,dpr);var w=r.width,h=500,cW=w-G.pL-G.pR,cH=h-G.pT-G.pB;
   G.w=w;G.h=h;G.cW=cW;G.cH=cH;ctx.clearRect(0,0,w,h);
   var yMax=Math.ceil(budget/5)*5+5,tH=0;sorted.forEach(function(s){tH+=s.hours;});var fH=Math.max(0,24-tH);
 
@@ -140,37 +148,23 @@ function draw(sorted,budget){
   ctx.setLineDash([6,4]);ctx.strokeStyle="#E24B4A";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(G.pL,cY);ctx.lineTo(G.pL+cW,cY);ctx.stroke();ctx.setLineDash([]);
   ctx.fillStyle="#E24B4A";ctx.font="11px Nunito,sans-serif";ctx.textAlign="right";ctx.fillText("Daily limit: "+budget.toFixed(1)+" MET-h",G.pL+cW-4,cY-8);
 
-  var mY=h-G.pB+22,mH=14;ctx.fillStyle="#b4b2a9";ctx.font="10px Nunito,sans-serif";ctx.textAlign="left";ctx.fillText("How does it feel?",G.pL,mY-4);
-
-  var en=0,hCur=0;mR=[];
+  var en=0,hCur=0;
   sorted.forEach(function(s){
     var x1=G.pL+(hCur/24)*cW,x2=G.pL+((hCur+s.hours)/24)*cW,y1=G.pT+cH-(en/yMax)*cH;en+=s.meth;var y2=G.pT+cH-(en/yMax)*cH,yB=G.pT+cH;
     ctx.globalAlpha=0.55;ctx.fillStyle=s.color;ctx.beginPath();ctx.moveTo(x1,yB);ctx.lineTo(x1,y1);ctx.lineTo(x2,y2);ctx.lineTo(x2,yB);ctx.closePath();ctx.fill();
     ctx.globalAlpha=1;ctx.strokeStyle=s.color;ctx.lineWidth=2.5;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke();
     if((x2-x1)>44){var mx=(x1+x2)/2,my=(y1+y2)/2;ctx.fillStyle="#2c2c2a";ctx.font="10px Nunito,sans-serif";ctx.textAlign="center";ctx.fillText(s.label,mx,my-10);ctx.fillStyle="#888";ctx.font="9px Nunito,sans-serif";ctx.fillText("+"+s.meth.toFixed(1)+" MET-h",mx,my+2);ctx.fillText(s.hours.toFixed(1)+"h",mx,my+13);}
-    var mc=mC[s.mood]||"#B4B2A9",mo=mO[s.mood]||0.25;
-    if((x2-x1)>1){ctx.globalAlpha=mo;ctx.fillStyle=mc;ctx.fillRect(x1+2,mY,x2-x1-3,mH);ctx.globalAlpha=1;}
-    mR.push({x:x1,y:mY,w:x2-x1,h:mH,label:s.label,mood:s.mood,quote:s.quote});hCur+=s.hours;
+    hCur+=s.hours;
   });
 
   if(fH>0.01){var fx1=G.pL+(hCur/24)*cW,fx2=G.pL+((hCur+fH)/24)*cW,fy1=G.pT+cH-(en/yMax)*cH;var fm=fH*1.0;en+=fm;var fy2=G.pT+cH-(en/yMax)*cH;
     ctx.globalAlpha=0.3;ctx.fillStyle="#C0DD97";ctx.beginPath();ctx.moveTo(fx1,G.pT+cH);ctx.lineTo(fx1,fy1);ctx.lineTo(fx2,fy2);ctx.lineTo(fx2,G.pT+cH);ctx.closePath();ctx.fill();ctx.globalAlpha=1;ctx.strokeStyle="#C0DD97";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(fx1,fy1);ctx.lineTo(fx2,fy2);ctx.stroke();
-    if((fx2-fx1)>40){var fmx=(fx1+fx2)/2,fmy=(fy1+fy2)/2;ctx.fillStyle="#2c2c2a";ctx.font="10px Nunito,sans-serif";ctx.textAlign="center";ctx.fillText("Free time",fmx,fmy-4);ctx.fillStyle="#888";ctx.font="9px Nunito,sans-serif";ctx.fillText(fH.toFixed(1)+"h",fmx,fmy+8);}
-    ctx.globalAlpha=0.2;ctx.fillStyle="#B4B2A9";ctx.fillRect(fx1+2,mY,fx2-fx1-3,mH);ctx.globalAlpha=1;
-    mR.push({x:fx1,y:mY,w:fx2-fx1,h:mH,label:"Free time",mood:"neutral",quote:null});}
-
-  var mly=mY+mH+14;ctx.font="10px Nunito,sans-serif";ctx.textAlign="left";var mlx=G.pL;
-  [["#1D9E75",0.6,"Positive"],["#97C459",0.45,"Slightly positive"],["#B4B2A9",0.3,"Neutral"],["#E24B4A",0.55,"Negative"]].forEach(function(m){ctx.globalAlpha=m[1];ctx.fillStyle=m[0];ctx.beginPath();ctx.arc(mlx+4,mly,4,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;ctx.fillStyle="#888";ctx.fillText(m[2],mlx+12,mly+3);mlx+=ctx.measureText(m[2]).width+24;});
+    if((fx2-fx1)>40){var fmx=(fx1+fx2)/2,fmy=(fy1+fy2)/2;ctx.fillStyle="#2c2c2a";ctx.font="10px Nunito,sans-serif";ctx.textAlign="center";ctx.fillText("Free time",fmx,fmy-4);ctx.fillStyle="#888";ctx.font="9px Nunito,sans-serif";ctx.fillText(fH.toFixed(1)+"h",fmx,fmy+8);}}
 
   var fY=G.pT+cH-(en/yMax)*cH,rem=budget-(en-fH);
   if(rem>0&&fY>cY+5){var bx=G.pL+cW-8;ctx.strokeStyle="#1D9E75";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(bx-6,fY);ctx.lineTo(bx,fY);ctx.lineTo(bx,cY);ctx.lineTo(bx-6,cY);ctx.stroke();var mb=(fY+cY)/2;ctx.fillStyle="#1D9E75";ctx.font="bold 11px Nunito,sans-serif";ctx.textAlign="right";ctx.fillText(rem.toFixed(1)+" MET-h",bx-10,mb+4);ctx.font="9px Nunito,sans-serif";ctx.fillText("headroom",bx-10,mb+16);}
   return{en:en,tH:tH,fH:fH,rem:Math.max(0,rem)};
 }
-
-function setupH(){var cv=document.getElementById("cv");
-  cv.addEventListener("mousemove",function(e){var r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top,qc=document.getElementById("qC"),found=false;
-    for(var i=0;i<mR.length;i++){var p=mR[i];if(mx>=p.x&&mx<=p.x+p.w&&my>=p.y-6&&my<=p.y+p.h+10){if(p.quote){var mc=p.mood==="negative"?"background:#FCEBEB;color:#791F1F":"background:#EAF3DE;color:#27500A";qc.setAttribute("style","margin-top:10px;padding:10px 14px;border-radius:8px;font-size:0.76rem;line-height:1.5;display:block;"+mc);qc.innerHTML='<div style="font-weight:500;font-size:0.72rem;margin-bottom:3px">'+p.label+'</div><div style="font-style:italic">\u201C'+p.quote.text+'\u201D</div><div style="font-size:0.68rem;margin-top:4px;opacity:0.7">\u2014 '+p.quote.attr+"</div>";found=true;}else if(p.label==="Free time"){qc.setAttribute("style","margin-top:10px;padding:10px 14px;border-radius:8px;font-size:0.76rem;line-height:1.5;display:block;background:#EAF3DE;color:#27500A");qc.innerHTML='<div style="font-weight:500;font-size:0.72rem;margin-bottom:3px">Free time \u2014 add exercise here?</div><div style="font-style:italic">\u201CExerting myself is really great for my mental health...if my mental health is good, I am better about choosing the right foods, being active.\u201D</div><div style="font-size:0.68rem;margin-top:4px;opacity:0.7">\u2014 Interviewee 7</div>';found=true;}break;}}if(!found)qc.style.display="none";});
-  cv.addEventListener("mouseleave",function(){document.getElementById("qC").style.display="none";});}
 
 function updS(d,b){var tp=Math.min(100,(d.tH/24)*100);document.getElementById("tF").style.width=tp+"%";document.getElementById("tF").style.background=d.tH<=24?"#378ADD":"#E24B4A";document.getElementById("tV").textContent=d.tH.toFixed(1)+"/24h";var tm=document.getElementById("tM");if(d.fH>0){tm.textContent=d.fH.toFixed(1)+"h free";tm.style.color="#1D9E75";}else{tm.textContent="No free time";tm.style.color="#E24B4A";}
   var rem=d.rem,ep=Math.min(100,((b-rem)/b)*100);document.getElementById("eF").style.width=ep+"%";document.getElementById("eF").style.background=rem>=EX_COST?"#378ADD":rem>0?"#BA7517":"#E24B4A";document.getElementById("eV").textContent=(b-rem).toFixed(1)+" / "+b.toFixed(1)+" MET-h";
@@ -186,11 +180,9 @@ function updI(d,b){var c=document.getElementById("iC");c.style.display="block";v
   else if(rem>0){c.className="ins wrn";c.innerHTML="Your energy budget is nearly full \u2014 only <strong>"+rem.toFixed(1)+" MET-h</strong> of headroom. Screen time costs <strong>"+scC.toFixed(1)+" MET-h</strong> but gives nothing back physically. Even a 20-min walk at 3.5 METs (1.2 MET-h) fits.";}
   else{c.className="ins neg";c.innerHTML="Your day uses <strong>"+b.toFixed(1)+" MET-hours</strong> \u2014 hitting the ceiling. Screen time at ~1 MET costs almost no energy but uses "+scH.toFixed(1)+" hours.";}}
 
-function buildL(){var h="";acts.forEach(function(a){h+='<div class="li"><span class="ls" style="background:'+a.color+'"></span>'+a.label+" ("+a.met+")</div>";});h+='<div class="li"><span class="ls" style="background:#C0DD97"></span>Free time (1.0)</div>';document.getElementById("leg").innerHTML=h;}
+function buildL(){var h="";acts.forEach(function(a){h+='<div class="li"><span class="ls" style="background:'+a.color+'"></span>'+a.label+" ("+a.met+")</div>";});h+='<div class="li"><span class="ls" style="background:#C0DD97"></span>Free time (1.0)</div>';document.getElementById("leg").innerHTML=h;}function upd(){var b=document.getElementById("bS").value/10;document.getElementById("bD").textContent=b.toFixed(1)+" MET-h";var s=getSorted(),d=draw(s,b);updS(d,b);updI(d,b);}
 
-function upd(){var b=document.getElementById("bS").value/10;document.getElementById("bD").textContent=b.toFixed(1)+" MET-h";var s=getSorted(),d=draw(s,b);updS(d,b);updI(d,b);}
-
-buildC();buildL();setupH();upd();window.addEventListener("resize",upd);
+buildC();buildL();upd();window.addEventListener("resize",upd);
 </script>
 </body>
 </html>

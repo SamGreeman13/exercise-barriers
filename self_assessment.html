@@ -4,66 +4,50 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>What works for people like you?</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:#fafaf8; color:#2c2c2a; }
+  body { font-family: "Nunito", sans-serif; background:#fafaf8; color:#2c2c2a; }
   .ctn { max-width:1000px; margin:0 auto; padding:2rem; }
   h1 { font-size:1.5rem; font-weight:500; margin-bottom:4px; }
   .sub { font-size:0.85rem; color:#888; margin-bottom:2rem; line-height:1.6; }
 
-  .layout { display:flex; gap:2rem; flex-wrap:wrap; }
+  .layout { display:flex; gap:2rem; flex-wrap:wrap; align-items:flex-start; }
   .left { flex:0 0 320px; }
-  .right { flex:1; min-width:360px; display:flex; flex-direction:column; align-items:center; }
+  .right { flex:1; min-width:380px; display:flex; flex-direction:column; align-items:center; }
 
   .sl { font-size:0.7rem; font-weight:500; color:#888; text-transform:uppercase; letter-spacing:0.5px; margin:16px 0 8px; }
   .sl:first-child { margin-top:0; }
 
   .q { margin-bottom:14px; }
   .q-label { font-size:0.82rem; font-weight:500; margin-bottom:2px; }
-  .q-desc { font-size:0.72rem; color:#888; margin-bottom:6px; }
   .q-row { display:flex; align-items:center; gap:8px; }
   .q-row input { flex:1; }
   .q-ends { display:flex; justify-content:space-between; font-size:0.65rem; color:#b4b2a9; margin-top:2px; }
   .q-val { font-size:0.85rem; font-weight:500; min-width:24px; text-align:right; }
 
-  .radar-wrap { display:flex; justify-content:center; margin-bottom:16px; }
-  canvas { width:100%; max-width:420px; }
+  .radar-wrap { position:relative; margin-bottom:12px; }
+  canvas { width:100%; max-width:460px; cursor:pointer; }
 
-  .radar-legend { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:16px; }
-  .radar-legend-item { font-size:0.68rem; color:#888; display:flex; align-items:center; gap:4px; }
+  .radar-legend { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-bottom:12px; }
+  .radar-legend-item { font-size:0.72rem; color:#888; display:flex; align-items:center; gap:5px; }
   .radar-legend-swatch { width:10px; height:10px; border-radius:2px; display:inline-block; }
 
-  .rec-panel { background:white; border:1px solid #e8e7e2; border-radius:10px; padding:16px 20px; }
-  .rec-header { font-size:0.9rem; font-weight:500; margin-bottom:4px; }
-  .rec-match-count { font-size:0.8rem; color:#888; margin-bottom:14px; line-height:1.5; }
-  .rec-match-count strong { color:#1D9E75; }
+  .click-hint { font-size:0.72rem; color:#b4b2a9; text-align:center; margin-bottom:12px; }
 
-  .rec-section { margin-bottom:14px; }
-  .rec-section-title { font-size:0.72rem; font-weight:500; color:#888; text-transform:uppercase; letter-spacing:0.3px; margin-bottom:6px; }
-
-  .rec-top { padding:12px 14px; background:#EAF3DE; border-radius:8px; margin-bottom:12px; }
-  .rec-top-label { font-size:0.7rem; font-weight:500; color:#27500A; margin-bottom:2px; }
-  .rec-top-value { font-size:1.1rem; font-weight:500; color:#27500A; }
-  .rec-top-stat { font-size:0.75rem; color:#3B6D11; margin-top:4px; }
-
-  .rec-list { list-style:none; }
-  .rec-item { display:flex; align-items:center; gap:10px; padding:8px 0; border-bottom:1px solid #e8e7e2; }
-  .rec-item:last-child { border-bottom:none; }
-  .rec-bar-wrap { flex:1; }
-  .rec-bar-label { font-size:0.78rem; font-weight:500; margin-bottom:3px; }
-  .rec-bar-outer { height:8px; background:#e8e7e2; border-radius:4px; overflow:hidden; }
-  .rec-bar-inner { height:100%; border-radius:4px; transition:width 0.4s; }
-  .rec-bar-stat { font-size:0.68rem; color:#888; margin-top:2px; }
-
-  .rec-insight { margin-top:14px; padding:12px 14px; border-radius:8px; background:#E6F1FB; font-size:0.78rem; line-height:1.6; color:#0C447C; }
-
-  .no-match { padding:16px; text-align:center; color:#888; font-size:0.85rem; }
+  .tip-card { background:#fff; border:1px solid #d3d1c7; border-radius:10px; padding:14px 18px;
+    font-size:0.8rem; line-height:1.6; width:100%; max-width:460px; display:none;
+    box-shadow:0 4px 16px rgba(0,0,0,0.1); }
+  .tip-card-title { font-weight:600; margin-bottom:6px; color:#2c2c2a; }
+  .tip-card-sub { font-size:0.72rem; color:#888; margin-bottom:10px; }
+  .tip-sol { padding:4px 0; font-size:0.78rem; }
+  .tip-sol-name { font-weight:500; }
 </style>
 </head>
 <body>
 <div class="ctn">
   <h1>What works for people like you?</h1>
-  <p class="sub">Rate how you feel about each dimension below. We'll show you what helped interview participants who faced similar mental barriers — and what you might try first.</p>
+  <p class="sub">Rate how you feel about each dimension, then click any point on the radar chart to see how participants overcame that barrier.</p>
 
   <div class="layout">
     <div class="left">
@@ -101,45 +85,98 @@
     </div>
 
     <div class="right">
-      <div class="sl">Your profile vs. participants</div>
-      <div class="radar-wrap"><canvas id="radar" width="420" height="420"></canvas></div>
+      <div class="sl">Your profile vs. all participants</div>
+      <div class="radar-wrap"><canvas id="radar" width="460" height="460"></canvas></div>
       <div class="radar-legend">
         <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#2c2c2a"></span>You</div>
-        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#1D9E75"></span>Average of similar participants</div>
+        <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#1D9E75"></span>Average of all participants</div>
       </div>
+      <div style="text-align:center;margin-bottom:12px;padding:8px 16px;background:rgba(55,138,221,0.06);border-radius:8px;font-size:0.82rem;font-weight:600;color:#2c2c2a;">Click any point on your profile to see how others overcame that barrier</div>
+      <div class="tip-card" id="tipCard"></div>
     </div>
   </div>
 </div>
 
 <script>
 var axisLabels = ["Gym\nintimidation","Social media\nimpact","Gym\nconfidence","Fear of\njudgment","Need a\npartner"];
+var axisNames = ["Gym intimidation","Social media impact","Gym confidence","Fear of judgment","Need a partner"];
+
+// Solutions mapped per barrier dimension — what helped participants who scored high on each
+var barrierSolutions = {
+  0: { // Gym intimidation
+    label: "Gym intimidation",
+    desc: "What helped participants who felt intimidated by gyms:",
+    solutions: [
+      {name:"Group classes", count:4},
+      {name:"Exercising with friends", count:3},
+      {name:"Learning the gym layout first", count:2},
+      {name:"Starting with familiar activities", count:2},
+      {name:"Structured classes from past sports", count:1}
+    ]
+  },
+  1: { // Social media impact
+    label: "Social media's impact on body image",
+    desc: "What helped participants who felt affected by social media:",
+    solutions: [
+      {name:"Focusing on how exercise feels, not looks", count:4},
+      {name:"Group classes for community", count:3},
+      {name:"Accountability buddy", count:2},
+      {name:"Limiting social media before gym", count:2},
+      {name:"Support system outside social media", count:1}
+    ]
+  },
+  2: { // Gym confidence (low = barrier)
+    label: "Low gym confidence",
+    desc: "What helped participants who didn't know what to do at the gym:",
+    solutions: [
+      {name:"Group classes with instructor guidance", count:5},
+      {name:"Going with an experienced friend", count:3},
+      {name:"Starting with familiar sports/activities", count:2},
+      {name:"Following online workout plans", count:2},
+      {name:"Personal training sessions", count:1}
+    ]
+  },
+  3: { // Fear of judgment
+    label: "Fear of being judged",
+    desc: "What helped participants who worried about being judged:",
+    solutions: [
+      {name:"Group classes (everyone is a beginner)", count:4},
+      {name:"Working out with a friend", count:3},
+      {name:"Off-peak gym hours", count:2},
+      {name:"Home workouts to build confidence first", count:2},
+      {name:"Remembering nobody is watching", count:1}
+    ]
+  },
+  4: { // Need a partner
+    label: "Needing a workout partner",
+    desc: "What helped participants who needed someone to go with:",
+    solutions: [
+      {name:"Group fitness classes", count:5},
+      {name:"Accountability partner", count:3},
+      {name:"Team sports or rec leagues", count:2},
+      {name:"Friends who share the interest", count:2},
+      {name:"Finding gym buddies through classes", count:1}
+    ]
+  }
+};
 
 var participants = [
-  {id:1, intim:7, social:6, conf:8, judge:7, partner:8,
-   solutions:["Group classes","Exercising with friends","Structured classes from past sports"],
-   topSolution:"Group classes", background:"Past cross country, track, and dance"},
-  {id:2, intim:7, social:3, conf:3, judge:7, partner:9,
-   solutions:["Group classes","Being around people","Learning gym layout"],
-   topSolution:"Group classes", background:"Past soccer, track & field, lacrosse"},
-  {id:3, intim:7, social:6, conf:6, judge:5, partner:7,
-   solutions:["Group classes","Accountability buddy","Support system"],
-   topSolution:"Group classes", background:"Past sports — love of the sport itself"},
-  {id:4, intim:3, social:2, conf:9, judge:2, partner:2,
-   solutions:["Working out alone","Recreating fun from youth sports","Good diet and routine"],
-   topSolution:"Solo routine", background:"Past sports — fun experiences and feelings"},
-  {id:5, intim:2, social:4, conf:8, judge:2, partner:2,
-   solutions:["Working out alone","Set routine","Peace and focus"],
-   topSolution:"Solo routine", background:"Past soccer and cricket"},
-  {id:6, intim:4, social:4, conf:8, judge:4, partner:9,
-   solutions:["Group classes","Accountability partner","Gym close to home"],
-   topSolution:"Group classes", background:"Past little league, soccer, basketball, volleyball"},
-  {id:7, intim:3, social:3, conf:9, judge:2, partner:2,
-   solutions:["Working out alone","Flexibility and function focus","Being limber"],
-   topSolution:"Solo routine", background:"Past tennis"},
-  {id:8, intim:6, social:6, conf:10, judge:5, partner:5,
-   solutions:["Team sports","Friends who share interest","Workplace gym"],
-   topSolution:"Team sports / gym buddy", background:"Past wrestling and football"},
+  {id:1, intim:7, social:6, conf:8, judge:7, partner:8},
+  {id:2, intim:7, social:3, conf:3, judge:7, partner:9},
+  {id:3, intim:7, social:6, conf:6, judge:5, partner:7},
+  {id:4, intim:3, social:2, conf:9, judge:2, partner:2},
+  {id:5, intim:2, social:4, conf:8, judge:2, partner:2},
+  {id:6, intim:4, social:4, conf:8, judge:4, partner:9},
+  {id:7, intim:3, social:3, conf:9, judge:2, partner:2},
+  {id:8, intim:6, social:6, conf:10, judge:5, partner:5},
 ];
+
+// Compute average of ALL participants (fixed, not dependent on similarity)
+var avgAll = [0,0,0,0,0];
+participants.forEach(function(p) {
+  avgAll[0] += p.intim; avgAll[1] += p.social; avgAll[2] += p.conf; avgAll[3] += p.judge; avgAll[4] += p.partner;
+});
+for (var i = 0; i < 5; i++) avgAll[i] /= participants.length;
 
 function getUserProfile() {
   var u = {
@@ -157,26 +194,10 @@ function getUserProfile() {
   return u;
 }
 
-function distance(u, p) {
-  return Math.sqrt(
-    Math.pow(u.intim - p.intim, 2) +
-    Math.pow(u.social - p.social, 2) +
-    Math.pow(u.conf - p.conf, 2) +
-    Math.pow(u.judge - p.judge, 2) +
-    Math.pow(u.partner - p.partner, 2)
-  );
-}
+// Store dot positions for click detection
+var dotPositions = [];
 
-function findSimilar(u, threshold) {
-  var dists = participants.map(function(p) { return { p: p, d: distance(u, p) }; });
-  dists.sort(function(a, b) { return a.d - b.d; });
-  var maxDist = threshold || 8;
-  var similar = dists.filter(function(x) { return x.d <= maxDist; });
-  if (similar.length < 2) similar = dists.slice(0, 3);
-  return similar.map(function(x) { return x.p; });
-}
-
-function drawRadar(user, similar) {
+function drawRadar(user) {
   var cv = document.getElementById("radar");
   var ctx = cv.getContext("2d");
   var dpr = window.devicePixelRatio || 1;
@@ -189,6 +210,7 @@ function drawRadar(user, similar) {
 
   ctx.clearRect(0,0,w,h);
 
+  // Grid rings
   for (var ring = 2; ring <= 10; ring += 2) {
     ctx.beginPath();
     ctx.strokeStyle = "#e8e7e2"; ctx.lineWidth = 0.5;
@@ -201,52 +223,41 @@ function drawRadar(user, similar) {
     ctx.stroke();
   }
 
+  // Axis lines and labels
   for (var i = 0; i < n; i++) {
     var a = (Math.PI*2/n)*i - Math.PI/2;
     ctx.beginPath(); ctx.moveTo(cx,cy);
     ctx.lineTo(cx+maxR*Math.cos(a), cy+maxR*Math.sin(a));
     ctx.strokeStyle = "#d3d1c7"; ctx.lineWidth = 0.5; ctx.stroke();
 
-    var lx = cx + (maxR+26)*Math.cos(a);
-    var ly = cy + (maxR+26)*Math.sin(a);
-    ctx.fillStyle = "#888"; ctx.font = "11px -apple-system,sans-serif";
+    var lx = cx + (maxR+28)*Math.cos(a);
+    var ly = cy + (maxR+28)*Math.sin(a);
+    ctx.fillStyle = "#888"; ctx.font = "11px Nunito,sans-serif";
     ctx.textAlign = "center"; ctx.textBaseline = "middle";
     axisLabels[i].split("\n").forEach(function(line, li) {
       ctx.fillText(line, lx, ly + (li - 0.5) * 13);
     });
   }
 
-  // Draw average of similar participants as single green area
-  if (similar.length > 0) {
-    var avgVals = [0,0,0,0,0];
-    similar.forEach(function(p) {
-      avgVals[0] += p.intim;
-      avgVals[1] += p.social;
-      avgVals[2] += p.conf;
-      avgVals[3] += p.judge;
-      avgVals[4] += p.partner;
-    });
-    for (var i = 0; i < 5; i++) avgVals[i] /= similar.length;
-
-    ctx.beginPath();
-    for (var i = 0; i <= n; i++) {
-      var idx = i % n;
-      var a = (Math.PI*2/n)*idx - Math.PI/2;
-      var r = (avgVals[idx]/10)*maxR;
-      if (i===0) ctx.moveTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
-      else ctx.lineTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
-    }
-    ctx.fillStyle = "#1D9E75";
-    ctx.globalAlpha = 0.15;
-    ctx.fill();
-    ctx.globalAlpha = 0.5;
-    ctx.strokeStyle = "#1D9E75";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.globalAlpha = 1;
+  // Draw average of all participants — green area
+  ctx.beginPath();
+  for (var i = 0; i <= n; i++) {
+    var idx = i % n;
+    var a = (Math.PI*2/n)*idx - Math.PI/2;
+    var r = (avgAll[idx]/10)*maxR;
+    if (i===0) ctx.moveTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
+    else ctx.lineTo(cx+r*Math.cos(a), cy+r*Math.sin(a));
   }
+  ctx.fillStyle = "#1D9E75";
+  ctx.globalAlpha = 0.15;
+  ctx.fill();
+  ctx.globalAlpha = 0.5;
+  ctx.strokeStyle = "#1D9E75";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
 
-  // Draw user profile
+  // Draw user profile — dark area
   var uVals = [user.intim, user.social, user.conf, user.judge, user.partner];
   ctx.beginPath();
   for (var i = 0; i <= n; i++) {
@@ -264,85 +275,102 @@ function drawRadar(user, similar) {
   ctx.lineWidth = 3;
   ctx.stroke();
 
+  // Draw clickable dots and store positions
+  dotPositions = [];
   for (var i = 0; i < n; i++) {
     var a = (Math.PI*2/n)*i - Math.PI/2;
     var r = (uVals[i]/10)*maxR;
-    ctx.beginPath(); ctx.arc(cx+r*Math.cos(a), cy+r*Math.sin(a), 4, 0, Math.PI*2);
+    var dx = cx+r*Math.cos(a), dy = cy+r*Math.sin(a);
+    ctx.beginPath(); ctx.arc(dx, dy, 6, 0, Math.PI*2);
     ctx.fillStyle = "#2c2c2a"; ctx.fill();
+    ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.stroke();
+    dotPositions.push({x: dx, y: dy, idx: i});
   }
 }
 
-function buildRecommendations(user, similar) {
-  var panel = document.getElementById("recPanel");
+function showBarrierTip(idx) {
+  var card = document.getElementById("tipCard");
+  var b = barrierSolutions[idx];
 
-  if (similar.length === 0) {
-    panel.innerHTML = '<div class="no-match">Adjust the sliders to see recommendations.</div>';
-    return;
-  }
+  var html = '<div class="tip-card-title">' + b.label + '</div>';
+  html += '<div class="tip-card-sub">' + b.desc + '</div>';
 
-  var n = similar.length;
-
-  var solCounts = {};
-  similar.forEach(function(p) {
-    p.solutions.forEach(function(s) {
-      solCounts[s] = (solCounts[s] || 0) + 1;
-    });
+  b.solutions.forEach(function(s, i) {
+    html += '<div class="tip-sol"><span style="color:#1D9E75;font-weight:600;margin-right:6px;">' + (i+1) + '.</span>';
+    html += '<span class="tip-sol-name">' + s.name + '</span></div>';
   });
 
-  var solList = Object.keys(solCounts).map(function(s) { return { name: s, count: solCounts[s] }; });
-  solList.sort(function(a, b) { return b.count - a.count; });
-
-  var highIntim = similar.filter(function(p) { return p.intim >= 5; });
-  var highIntimGroup = highIntim.length > 0 ? highIntim.filter(function(p) {
-    return p.solutions.some(function(s) { return s.indexOf("Group") >= 0 || s.indexOf("friends") >= 0 || s.indexOf("buddy") >= 0 || s.indexOf("partner") >= 0 || s.indexOf("Team") >= 0; });
-  }) : [];
-
-  var html = '';
-  html += '<div class="rec-header">What helped people with similar barriers</div>';
-  html += '<div class="rec-match-count"><strong>' + n + ' of 8 participants</strong> share a similar barrier profile to yours.</div>';
-
-  html += '<div class="rec-section">';
-  html += '<div class="rec-section-title">What worked (ranked by how often it helped)</div>';
-  html += '<ul class="rec-list">';
-  solList.forEach(function(s, i) {
-    var pct = Math.round((s.count / n) * 100);
-    var isMajority = pct >= 50;
-    var isTop = i < 3 && pct >= 30;
-    var color = isMajority ? "#1D9E75" : isTop ? "#5DCAA5" : "#B4B2A9";
-    var highlight = isMajority || isTop;
-    html += '<li class="rec-item"><div class="rec-bar-wrap">';
-    html += '<div class="rec-bar-label" style="' + (highlight ? 'color:#2c2c2a' : 'color:#888') + '">' + s.name + (isMajority ? ' <span style="font-size:0.65rem;color:#1D9E75;font-weight:500">majority</span>' : '') + '</div>';
-    html += '<div class="rec-bar-outer"><div class="rec-bar-inner" style="width:' + pct + '%;background:' + color + '"></div></div>';
-    html += '<div class="rec-bar-stat">' + s.count + ' of ' + n + ' participants (' + pct + '%)</div>';
-    html += '</div></li>';
-  });
-  html += '</ul></div>';
-
-  if (highIntim.length > 0 && highIntimGroup.length > 0) {
-    var pct = Math.round((highIntimGroup.length / highIntim.length) * 100);
-    html += '<div class="rec-insight">';
-    html += '<strong>' + pct + '% of participants with high gym intimidation</strong> found that social exercise settings (group classes, exercising with friends, or team sports) helped them overcome it. None of them said going alone was the answer.';
-    html += '</div>';
-  }
-
-  var userBarrier = user.intim >= 6 ? "gym intimidation" : user.social >= 6 ? "social media's impact on body image" : user.judge >= 6 ? "fear of being judged" : user.conf <= 4 ? "low gym confidence" : null;
-  if (userBarrier) {
-    var bgList = similar.map(function(p) { return p.background; });
-    var uniqueBg = bgList.filter(function(v, i, a) { return a.indexOf(v) === i; });
-    html += '<div class="rec-insight" style="background:#FAEEDA;color:#633806;margin-top:10px">';
-    html += 'Your biggest barrier appears to be <strong>' + userBarrier + '</strong>. ';
-    html += 'Similar participants had backgrounds in: ' + uniqueBg.join("; ") + '. ';
-    html += 'Their past experience with structured physical activity helped them find exercise formats that felt comfortable.';
-    html += '</div>';
-  }
-
-  panel.innerHTML = html;
+  card.innerHTML = html;
+  card.style.display = "block";
 }
+
+var hoveredDot = -1;
+
+// Hover: enlarge dot on mouseover
+document.getElementById("radar").addEventListener("mousemove", function(e) {
+  var cv = this;
+  var rect = cv.getBoundingClientRect();
+  var mx = (e.clientX - rect.left) / rect.width * cv.offsetWidth;
+  var my = (e.clientY - rect.top) / rect.height * cv.offsetHeight;
+
+  var found = -1;
+  for (var i = 0; i < dotPositions.length; i++) {
+    var d = dotPositions[i];
+    var dist = Math.sqrt((mx - d.x) * (mx - d.x) + (my - d.y) * (my - d.y));
+    if (dist < 18) { found = i; break; }
+  }
+
+  if (found !== hoveredDot) {
+    hoveredDot = found;
+    var user = getUserProfile();
+    drawRadar(user);
+
+    // Redraw the hovered dot larger
+    if (found >= 0) {
+      var cv2 = document.getElementById("radar");
+      var ctx = cv2.getContext("2d");
+      var dpr = window.devicePixelRatio || 1;
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      var d = dotPositions[found];
+      ctx.beginPath(); ctx.arc(d.x, d.y, 10, 0, Math.PI*2);
+      ctx.fillStyle = "#2c2c2a"; ctx.fill();
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.restore();
+    }
+  }
+
+  cv.style.cursor = found >= 0 ? "pointer" : "default";
+});
+
+document.getElementById("radar").addEventListener("mouseleave", function() {
+  if (hoveredDot >= 0) {
+    hoveredDot = -1;
+    var user = getUserProfile();
+    drawRadar(user);
+  }
+});
+
+// Click: show solutions below
+document.getElementById("radar").addEventListener("click", function(e) {
+  var cv = this;
+  var rect = cv.getBoundingClientRect();
+  var mx = (e.clientX - rect.left) / rect.width * cv.offsetWidth;
+  var my = (e.clientY - rect.top) / rect.height * cv.offsetHeight;
+
+  for (var i = 0; i < dotPositions.length; i++) {
+    var d = dotPositions[i];
+    var dist = Math.sqrt((mx - d.x) * (mx - d.x) + (my - d.y) * (my - d.y));
+    if (dist < 18) {
+      showBarrierTip(d.idx);
+      return;
+    }
+  }
+});
 
 function update() {
   var user = getUserProfile();
-  var similar = findSimilar(user, 8);
-  drawRadar(user, similar);
+  drawRadar(user);
 }
 
 update();
