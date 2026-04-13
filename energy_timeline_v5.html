@@ -72,7 +72,7 @@
 <div class="ctn">
   <div class="back-nav"><a href="index.html">← Back to overview</a></div>
   <div class="header-block">
-    <h1>Where does your energy go?</h1>
+    <h1>Distribution of Daily Energy</h1>
     <p class="sub">Adjust how many hours you spend on each activity. The chart shows your energy accumulating — the gap below the ceiling is your exercise headroom.</p>
     <span class="info-tog" onclick="document.getElementById('ip').classList.toggle('open')">What are METs? Read more about this visualization</span>
   </div>
@@ -99,9 +99,9 @@
         <p><strong>44–50 MET-h:</strong> Moderately active — on your feet for work (retail, teaching), regular exercise.</p>
         <p><strong>51–58 MET-h:</strong> Very active — construction, nursing, athletics, or multiple workouts per day.</p>
       </div>
-      <div class="bc"><div class="bc-h"><span>Your daily limit</span><span id="bD">40.8 MET-h</span></div><input type="range" id="bS" min="336" max="576" value="408" step="1" oninput="upd()" style="width:100%"><div class="bc-lb"><span>Light (33.6)</span><span>Active (57.6)</span></div></div>
+      <div class="bc"><div class="bc-h"><span>Daily Limit</span><span id="bD">40.8 MET-h</span></div><input type="range" id="bS" min="336" max="576" value="408" step="1" oninput="upd()" style="width:100%"><div class="bc-lb"><span>Light (33.6)</span><span>Active (57.6)</span></div></div>
       <div class="sc"><div class="sc-h"><span>Time</span><span id="tV"></span></div><div class="sb"><div class="sf" id="tF"></div></div><div class="sm" id="tM"></div></div>
-      <div class="sc"><div class="sc-h"><span>Energy used</span><span id="eV"></span></div><div class="sb"><div class="sf" id="eF"></div></div><div class="sm" id="eM"></div></div>
+      <div class="sc"><div class="sc-h"><span>Energy Used</span><span id="eV"></span></div><div class="sb"><div class="sf" id="eF"></div></div><div class="sm" id="eM"></div></div>
       <div class="eb"><div class="eb-t">Can you fit a workout?</div><div id="exC"></div></div>
     </div>
     <div class="chp">
@@ -114,9 +114,9 @@
       </div>
       <div id="iC" class="ins pos" style="display:none"></div>
       <div style="margin-top:12px;padding:14px 16px;background:rgba(255,255,255,0.35);border:none;border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.16);font-size:0.78rem;line-height:1.7;color:#444;">
-        <div style="font-weight:500;color:#2c2c2a;margin-bottom:6px;">What our interviewees said</div>
-        <p style="margin-bottom:8px;">All 8 participants described negative feelings about social media — yet spent 2–3 hours on it daily at almost no energy cost (~1.15 METs). One called it <span style="color:#D4537E;font-style:italic;">"kind of like a drug"</span>, describing the distress of giving time and energy to content they knew was meaningless. Another said social media left them <span style="color:#D4537E;font-style:italic;">"comparing myself to people I don't even know"</span>, while a third described a cycle of <span style="color:#D4537E;font-style:italic;">"scrolling for an hour and then feeling worse about myself than before I picked up my phone."</span></p>
-        <p style="margin-bottom:0;">Exercise told the opposite story. Participants who worked out regularly said it was when they <span style="color:#1D9E75;font-style:italic;">"felt their best"</span> — and the benefits cascaded, with one noting that good mental health from exercise led to <span style="color:#1D9E75;font-style:italic;">"choosing the right foods, being active"</span> in other areas. Others described the gym as <span style="color:#1D9E75;font-style:italic;">"the one part of my day that's just for me"</span> and said group classes made them feel <span style="color:#1D9E75;font-style:italic;">"like everyone is working together on the same activity"</span> — turning a high-energy cost into something they looked forward to. At 5.5 METs for 45 minutes, exercise is the highest-cost activity in most people's day — but the only one that consistently gave something back.</p>
+        <div style="font-weight:500;color:#2c2c2a;margin-bottom:6px;">Our Interview Insights</div>
+        <p style="margin-bottom:8px;">Across all interviews, participants expressed overwhelmingly negative feelings toward social media, despite spending an average of 2–3 hours on it each day at almost no energy cost (approximately 1.15 METs). Many described the experience as addictive and emotionally draining, and several noted the frustration of investing so much time and attention into content they recognized as meaningless.</span></p>
+        <p style="margin-bottom:0;">In contrast, their experiences with physical activity revealed a very different pattern. Participants who exercised regularly reported feeling their best after a workout, and they emphasized the lasting improvements in mood, confidence, and overall well‑being. Although exercise requires significantly more energy at roughly 5.5 METs for 45 minutes, it was consistently described as one of the only physically demanding parts of the day that reliably provided a positive return.</p>
       </div>
     </div>
   </div>
@@ -128,14 +128,14 @@
 <script>
 var EX_MET=5.5,EX_HRS=0.75,EX_COST=EX_MET*EX_HRS,curSort='meth';
 var acts=[
-  {id:"sleep",label:"Sleep",met:0.95,color:"#85B7EB",hours:8,max:12,mood:"neutral",quote:null},
-  {id:"screen",label:"Social media / TV",met:1.15,color:"#97C4F0",hours:2.5,max:8,mood:"negative",quote:{text:"I know a great majority of it is garbage, so it\u2019s this distress of giving my time and energy to it when I could be doing something more productive. It\u2019s kind of like a drug.",attr:"Interviewee 7"}},
-  {id:"eating",label:"Eating",met:1.5,color:"#5DCAA5",hours:1,max:3,mood:"slight-pos",quote:null},
-  {id:"social",label:"Socializing / leisure",met:1.6,color:"#1D9E75",hours:1,max:4,mood:"positive",quote:{text:"I prefer group fitness classes \u2014 it\u2019s more enjoyable when everyone is working together on the same activity.",attr:"Interviewee 6"}},
-  {id:"work",label:"Work / school",met:1.8,color:"#97C459",hours:8,max:12,mood:"neutral",quote:null},
-  {id:"commute",label:"Commute",met:2.0,color:"#EF9F27",hours:1,max:4,mood:"neutral",quote:null},
-  {id:"cooking",label:"Cooking / prep",met:3.3,color:"#E24B4A",hours:0.5,max:3,mood:"slight-pos",quote:{text:"When I am working out lots, when I am getting outside more \u2014 that\u2019s when I feel my best.",attr:"Interviewee 3"}},
-  {id:"chores",label:"Chores / errands",met:3.5,color:"#A32D2D",hours:0.5,max:3,mood:"neutral",quote:null}
+  {id:"sleep",label:"Sleep",met:0.95,color:"#85B7EB",hours:8,max:12},
+  {id:"screen",label:"Social Media/TV",met:1.15,color:"#97C4F0",hours:2.5,max:8},
+  {id:"eating",label:"Eating",met:1.5,color:"#5DCAA5",hours:1,max:3,mood:"slight-pos"},
+  {id:"social",label:"Socializing/Leisure",met:1.6,color:"#1D9E75",hours:1,max:4},
+  {id:"work",label:"Work/School",met:1.8,color:"#97C459",hours:8,max:12},
+  {id:"commute",label:"Commute",met:2.0,color:"#EF9F27",hours:1,max:4},
+  {id:"cooking",label:"Cooking/Prep",met:3.3,color:"#E24B4A",hours:0.5,max:3},
+  {id:"chores",label:"Chores/Errands",met:3.5,color:"#A32D2D",hours:0.5,max:3}
 ];
 
 function buildC(){var h="";acts.forEach(function(a){h+='<div class="act"><div class="act-h"><span class="act-l"><span class="dot" style="background:'+a.color+'"></span>'+a.label+'</span><span class="act-m">'+a.met+' METs</span></div><div class="act-row"><input type="range" min="0" max="'+(a.max*2)+'" value="'+(a.hours*2)+'" step="1" oninput="chg(\''+a.id+"',this.value)\"><span class=\"act-v\" id=\"v_"+a.id+'">'+a.hours.toFixed(1)+"h</span></div></div>";});document.getElementById("actC").innerHTML=h;}

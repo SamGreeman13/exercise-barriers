@@ -13,9 +13,6 @@
   .back-nav a { font-size:0.78rem; color:#888; text-decoration:none; display:inline-flex; align-items:center; gap:4px; }
   .back-nav a:hover { color:#2c2c2a; }
   .header-block { background:rgba(255,255,255,0.35); padding:1.2rem 1.5rem; border-radius:12px; margin-bottom:1.5rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
-  .back-nav { margin-bottom:1rem; }
-  .back-nav a { font-size:0.78rem; color:#888; text-decoration:none; display:inline-flex; align-items:center; gap:4px; }
-  .back-nav a:hover { color:#2c2c2a; }
   h1 { font-size:1.5rem; font-weight:500; margin-bottom:4px; }
   .sub { font-size:0.85rem; color:#888; margin-bottom:0; line-height:1.6; }
 
@@ -40,8 +37,6 @@
   .radar-legend-item { font-size:0.72rem; color:#888; display:flex; align-items:center; gap:5px; }
   .radar-legend-swatch { width:10px; height:10px; border-radius:2px; display:inline-block; }
 
-  .click-hint { font-size:0.72rem; color:#b4b2a9; text-align:center; margin-bottom:12px; }
-
   .tip-card { background:rgba(255,255,255,0.5); border:1px solid rgba(0,0,0,0.04); border-radius:12px; padding:14px 18px;
     font-size:0.8rem; line-height:1.6; width:100%; max-width:460px; display:none;
     box-shadow:0 1px 4px rgba(0,0,0,0.16); }
@@ -56,7 +51,7 @@
 <div class="ctn">
   <div class="back-nav"><a href="index.html">← Back to overview</a></div>
   <div class="header-block">
-    <h1>What works for people like you?</h1>
+    <h1>Perceptions of Going to the Gym & Recommendations</h1>
     <p class="sub">Rate how you feel about each dimension, then click any point on the radar chart to see how participants overcame that barrier.</p>
   </div>
 
@@ -73,7 +68,7 @@
       <div class="q">
         <div class="q-label">How much does social media affect how you feel about your body?</div>
         <div class="q-row"><input type="range" min="1" max="10" value="5" id="qSocial" oninput="update()"><span class="q-val" id="vSocial">5</span></div>
-        <div class="q-ends"><span>Not at all</span><span>A lot</span></div>
+        <div class="q-ends"><span>Not at all</span><span>Extremely</span></div>
       </div>
 
       <div class="q">
@@ -91,7 +86,7 @@
       <div class="q">
         <div class="q-label">How important is having someone to go with?</div>
         <div class="q-row"><input type="range" min="1" max="10" value="5" id="qPartner" oninput="update()"><span class="q-val" id="vPartner">5</span></div>
-        <div class="q-ends"><span>Prefer alone</span><span>Need a partner</span></div>
+        <div class="q-ends"><span>Not Important</span><span>Extremely</span></div>
       </div>
     </div>
 
@@ -121,55 +116,55 @@ var barrierSolutions = {
     label: "Gym intimidation",
     desc: "What helped participants who felt intimidated by gyms:",
     solutions: [
-      {name:"Group classes", count:4},
-      {name:"Exercising with friends", count:3},
-      {name:"Learning the gym layout first", count:2},
-      {name:"Starting with familiar activities", count:2},
-      {name:"Structured classes from past sports", count:1}
+      {name:"Group classes"},
+      {name:"Exercising with friends"},
+      {name:"Learning the gym layout first"},
+      {name:"Starting with familiar activities"},
+      {name:"Structured classes from past sports"}
     ]
   },
   1: { // Social media impact
     label: "Social media's impact on body image",
     desc: "What helped participants who felt affected by social media:",
     solutions: [
-      {name:"Focusing on how exercise feels, not looks", count:4},
-      {name:"Group classes for community", count:3},
-      {name:"Accountability buddy", count:2},
-      {name:"Limiting social media before gym", count:2},
-      {name:"Support system outside social media", count:1}
+      {name:"Focusing on how exercise feels, not looks"},
+      {name:"Group classes for community"},
+      {name:"Accountability buddy"},
+      {name:"Limiting social media before gym"},
+      {name:"Support system outside social media"}
     ]
   },
   2: { // Gym confidence (low = barrier)
     label: "Low gym confidence",
     desc: "What helped participants who didn't know what to do at the gym:",
     solutions: [
-      {name:"Group classes with instructor guidance", count:5},
-      {name:"Going with an experienced friend", count:3},
-      {name:"Starting with familiar sports/activities", count:2},
-      {name:"Following online workout plans", count:2},
-      {name:"Personal training sessions", count:1}
+      {name:"Group classes with instructor guidance"},
+      {name:"Going with an experienced friend"},
+      {name:"Starting with familiar sports/activities"},
+      {name:"Following online workout plans"},
+      {name:"Personal training sessions"}
     ]
   },
   3: { // Fear of judgment
     label: "Fear of being judged",
     desc: "What helped participants who worried about being judged:",
     solutions: [
-      {name:"Group classes (everyone is a beginner)", count:4},
-      {name:"Working out with a friend", count:3},
-      {name:"Off-peak gym hours", count:2},
-      {name:"Home workouts to build confidence first", count:2},
-      {name:"Remembering nobody is watching", count:1}
+      {name:"Group classes (everyone is a beginner)"},
+      {name:"Working out with a friend"},
+      {name:"Off-peak gym hours"},
+      {name:"Home workouts to build confidence first"},
+      {name:"Remembering nobody is watching"}
     ]
   },
   4: { // Need a partner
     label: "Needing a workout partner",
     desc: "What helped participants who needed someone to go with:",
     solutions: [
-      {name:"Group fitness classes", count:5},
-      {name:"Accountability partner", count:3},
-      {name:"Team sports or rec leagues", count:2},
-      {name:"Friends who share the interest", count:2},
-      {name:"Finding gym buddies through classes", count:1}
+      {name:"Group fitness classes"},
+      {name:"Accountability partner"},
+      {name:"Team sports or rec leagues"},
+      {name:"Friends who share the interest"},
+      {name:"Finding gym buddies through classes"}
     ]
   }
 };
