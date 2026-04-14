@@ -13,7 +13,7 @@
   .hero h1 { font-size:1.5rem; font-weight:500; margin-bottom:6px; }
   .hero p { font-size:0.9rem; color:#888; line-height:1.6; }
 
-  .venn-wrap { position:relative; width:100%; max-width:720px; margin:0 auto; height:430px; }
+  .venn-wrap { position:relative; width:100%; max-width:720px; margin:0 auto; }
 
   .venn-circle { position:absolute; border-radius:50%; transition:transform 0.25s ease; }
   .venn-circle.hovered { transform:scale(1.07); filter:saturate(2.65) brightness(0.95); transition:transform 0.2s ease, filter 0.2s ease; }
@@ -49,12 +49,10 @@
     .hero { padding:1rem 1.2rem; margin-bottom:1rem; }
     .hero h1 { font-size:1.2rem; }
     .hero p { font-size:0.82rem; }
-    .venn-wrap { height:auto; aspect-ratio:720/430; max-width:100%; overflow:hidden; }
-    .venn-scale { transform-origin:top left; }
+    .preview-img, .preview-cap { display:none !important; }
     .about { padding:1.2rem 1.4rem; margin-top:1.5rem; }
     .about h2 { font-size:1rem; }
     .about p { font-size:0.8rem; }
-    .preview-img, .preview-cap { display:none !important; }
     .footer { padding:1.5rem 1rem; }
   }
 </style>
@@ -69,7 +67,6 @@
     <span style="font-size:1.05rem;font-weight:600;color:#2c2c2a;">Click the barrier to explore</span>
   </div>
   <div class="venn-wrap" id="venn">
-    <div class="venn-scale" id="vennScale">
 
     <!-- Mental / Intrinsic (left, pink) -->
     <div class="venn-circle" id="cMental"
@@ -112,7 +109,6 @@
     <div class="preview-cap" id="capTime">See how your daily energy budget leaves room for exercise</div>
     <div class="preview-cap" id="capAccess">Find gyms within walking distance and transit access, and compare accessibility scores</div>
     <div class="preview-cap" id="capOverlap">See how your daily energy budget leaves room for exercise</div>
-    </div>
   </div>
 
   <div class="about">
@@ -136,24 +132,6 @@ var links = {
   overlap: "energy_timeline_v5.html",
 };
 
-// Mobile scaling
-var VENN_BASE_W = 720;
-function scaleVenn() {
-  var wrap = document.getElementById("venn");
-  var inner = document.getElementById("vennScale");
-  var w = wrap.offsetWidth;
-  if (w < VENN_BASE_W) {
-    var s = w / VENN_BASE_W;
-    inner.style.transform = "scale(" + s + ")";
-    wrap.style.height = (430 * s) + "px";
-  } else {
-    inner.style.transform = "";
-    wrap.style.height = "430px";
-  }
-}
-scaleVenn();
-window.addEventListener("resize", scaleVenn);
-
 var previewEls = {
   mental: document.getElementById("prevMental"),
   time: document.getElementById("prevTime"),
@@ -168,20 +146,66 @@ var capEls = {
   overlap: document.getElementById("capOverlap"),
 };
 
-var circles = {
-  mental: { cx: 50 + 155, cy: 85 + 155, r: 155 },
-  time:   { cx: 260 + 175, cy: 65 + 175, r: 175 },
-  access: { cx: 420 + 77.5, cy: 200 + 77.5, r: 77.5 },
+// Base coordinates at 720px width
+var BASE_W = 720, BASE_H = 430;
+var circlesBase = {
+  mental: { cx: 205, cy: 240, r: 155 },
+  time:   { cx: 435, cy: 240, r: 175 },
+  access: { cx: 497.5, cy: 277.5, r: 77.5 },
 };
 
 function dist(x1, y1, x2, y2) {
   return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
 }
 
+function getScale() {
+  var venn = document.getElementById("venn");
+  return Math.min(venn.offsetWidth / BASE_W, 1);
+}
+
+function sizeVenn() {
+  var venn = document.getElementById("venn");
+  var s = getScale();
+  venn.style.height = (BASE_H * s) + "px";
+
+  // Scale all absolutely positioned children
+  var els = venn.querySelectorAll(".venn-circle, .inner-circle, .circle-label, .zone-label");
+  els.forEach(function(el) {
+    if (!el.dataset.origStyle) el.dataset.origStyle = el.getAttribute("style") || "";
+    // Parse original inline style values
+    var orig = el.dataset.origStyle;
+    var props = ["width","height","left","top","padding-right","padding-left"];
+    props.forEach(function(p) {
+      var m = orig.match(new RegExp(p + "\\s*:\\s*(-?[\\d.]+)px"));
+      var jsProp = p.replace(/-([a-z])/g, function(g){ return g[1].toUpperCase(); });
+      if (m) el.style[jsProp] = (parseFloat(m[1]) * s) + "px";
+    });
+  });
+
+  // Scale font sizes in labels
+  venn.querySelectorAll(".circle-label-name").forEach(function(el) {
+    var base = parseFloat(el.dataset.baseFontSize || (el.dataset.baseFontSize = el.style.fontSize || "16px"));
+    el.style.fontSize = (base * s) + "px";
+  });
+  venn.querySelectorAll(".circle-label-count").forEach(function(el) {
+    var base = parseFloat(el.dataset.baseFontSize || (el.dataset.baseFontSize = el.style.fontSize || "12px"));
+    el.style.fontSize = (base * s) + "px";
+  });
+  venn.querySelectorAll(".zone-label-name").forEach(function(el) {
+    el.style.fontSize = (11 * s) + "px";
+  });
+}
+
+sizeVenn();
+window.addEventListener("resize", sizeVenn);
+
 function getZone(mx, my) {
-  var inMental = dist(mx, my, circles.mental.cx, circles.mental.cy) <= circles.mental.r;
-  var inTime = dist(mx, my, circles.time.cx, circles.time.cy) <= circles.time.r;
-  var inAccess = dist(mx, my, circles.access.cx, circles.access.cy) <= circles.access.r;
+  // mx, my are in screen coords relative to venn; convert to base coords
+  var s = getScale();
+  var bx = mx / s, by = my / s;
+  var inMental = dist(bx, by, circlesBase.mental.cx, circlesBase.mental.cy) <= circlesBase.mental.r;
+  var inTime = dist(bx, by, circlesBase.time.cx, circlesBase.time.cy) <= circlesBase.time.r;
+  var inAccess = dist(bx, by, circlesBase.access.cx, circlesBase.access.cy) <= circlesBase.access.r;
   if (inAccess) return "access";
   if (inMental && inTime) return "overlap";
   if (inTime) return "time";
@@ -199,12 +223,24 @@ function hideAll() {
   });
 }
 
+function resetCircles() {
+  document.getElementById("cMental").classList.remove("hovered");
+  document.getElementById("cTime").classList.remove("hovered");
+  document.getElementById("cAccess").classList.remove("hovered");
+}
+
+function highlightZone(zone) {
+  resetCircles();
+  if (zone === "mental") document.getElementById("cMental").classList.add("hovered");
+  if (zone === "time") document.getElementById("cTime").classList.add("hovered");
+  if (zone === "access") document.getElementById("cAccess").classList.add("hovered");
+  if (zone === "overlap") { document.getElementById("cMental").classList.add("hovered"); document.getElementById("cTime").classList.add("hovered"); }
+}
+
 venn.addEventListener("mousemove", function(e) {
   var vr = venn.getBoundingClientRect();
-  var inner = document.getElementById("vennScale");
-  var s = inner.getBoundingClientRect().width / VENN_BASE_W;
-  var mx = (e.clientX - vr.left) / s;
-  var my = (e.clientY - vr.top) / s;
+  var mx = e.clientX - vr.left;
+  var my = e.clientY - vr.top;
   var zone = getZone(mx, my);
 
   if (zone !== lastZone) {
@@ -212,24 +248,17 @@ venn.addEventListener("mousemove", function(e) {
     lastZone = zone;
   }
 
-// Reset all circles
-  document.getElementById("cMental").classList.remove("hovered");
-  document.getElementById("cTime").classList.remove("hovered");
-  document.getElementById("cAccess").classList.remove("hovered");
+  resetCircles();
 
   if (zone) {
-    // Highlight the active circle(s)
-    if (zone === "mental") document.getElementById("cMental").classList.add("hovered");
-    if (zone === "time") document.getElementById("cTime").classList.add("hovered");
-    if (zone === "access") document.getElementById("cAccess").classList.add("hovered");
-    if (zone === "overlap") { document.getElementById("cMental").classList.add("hovered"); document.getElementById("cTime").classList.add("hovered"); }
+    highlightZone(zone);
 
     var prev = previewEls[zone];
     var prevX = e.clientX - vr.left - 90;
     var prevY = e.clientY - vr.top + 20;
     if (prevX < 10) prevX = 10;
     if (prevX + 180 > vr.width) prevX = vr.width - 190;
-    if (prevY + 120 > 430) prevY = e.clientY - vr.top - 130;
+    if (prevY + 120 > vr.height) prevY = e.clientY - vr.top - 130;
     prev.style.left = prevX + "px";
     prev.style.top = prevY + "px";
     prev.style.opacity = 1;
@@ -248,19 +277,28 @@ venn.addEventListener("mousemove", function(e) {
 venn.addEventListener("mouseleave", function() {
   hideAll();
   lastZone = null;
-  document.getElementById("cMental").classList.remove("hovered");
-  document.getElementById("cTime").classList.remove("hovered");
-  document.getElementById("cAccess").classList.remove("hovered");
+  resetCircles();
 });
 
 venn.addEventListener("click", function(e) {
   var vr = venn.getBoundingClientRect();
-  var inner = document.getElementById("vennScale");
-  var s = inner.getBoundingClientRect().width / VENN_BASE_W;
-  var mx = (e.clientX - vr.left) / s;
-  var my = (e.clientY - vr.top) / s;
+  var mx = e.clientX - vr.left;
+  var my = e.clientY - vr.top;
   var zone = getZone(mx, my);
   if (zone && links[zone]) window.location.href = links[zone];
+});
+
+// Touch support for mobile
+venn.addEventListener("touchend", function(e) {
+  var touch = e.changedTouches[0];
+  var vr = venn.getBoundingClientRect();
+  var mx = touch.clientX - vr.left;
+  var my = touch.clientY - vr.top;
+  var zone = getZone(mx, my);
+  if (zone && links[zone]) {
+    e.preventDefault();
+    window.location.href = links[zone];
+  }
 });
 </script>
 </body>
