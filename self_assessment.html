@@ -45,6 +45,21 @@
   .tip-sol { padding:4px 0; font-size:0.78rem; }
   .tip-sol-name { font-weight:500; }
   .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#666; background:rgba(255,255,255,0.35); margin-top:2rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
+
+  @media (max-width: 768px) {
+    .ctn { padding:1rem; }
+    .header-block { padding:1rem 1.2rem; }
+    h1 { font-size:1.15rem; }
+    .sub { font-size:0.8rem; }
+    .layout { gap:1rem; }
+    .left { flex:0 0 auto; width:100%; padding:12px 14px; }
+    .right { min-width:0; width:100%; padding:12px 14px; }
+    canvas { max-width:320px; }
+    .q { padding:8px 10px; margin-bottom:10px; }
+    .q-label { font-size:0.78rem; }
+    .tip-card { padding:12px 14px; font-size:0.76rem; }
+    .footer { padding:1.5rem 1rem; }
+  }
 </style>
 </head>
 <body>
@@ -371,6 +386,25 @@ document.getElementById("radar").addEventListener("click", function(e) {
     var d = dotPositions[i];
     var dist = Math.sqrt((mx - d.x) * (mx - d.x) + (my - d.y) * (my - d.y));
     if (dist < 18) {
+      showBarrierTip(d.idx);
+      return;
+    }
+  }
+});
+
+// Touch support for mobile — larger hit area
+document.getElementById("radar").addEventListener("touchend", function(e) {
+  var cv = this;
+  var rect = cv.getBoundingClientRect();
+  var touch = e.changedTouches[0];
+  var mx = (touch.clientX - rect.left) / rect.width * cv.offsetWidth;
+  var my = (touch.clientY - rect.top) / rect.height * cv.offsetHeight;
+
+  for (var i = 0; i < dotPositions.length; i++) {
+    var d = dotPositions[i];
+    var dist = Math.sqrt((mx - d.x) * (mx - d.x) + (my - d.y) * (my - d.y));
+    if (dist < 30) {
+      e.preventDefault();
       showBarrierTip(d.idx);
       return;
     }

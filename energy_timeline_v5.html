@@ -66,6 +66,22 @@
   .ins.wrn { background:#FAEEDA; color:#633806; }
   .ins.neg { background:#FCEBEB; color:#791F1F; }
   .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#666; background:rgba(255,255,255,0.35); margin-top:2rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
+
+  @media (max-width: 768px) {
+    .ctn { padding:1rem; }
+    .header-block { padding:1rem 1.2rem; }
+    h1 { font-size:1.2rem; }
+    .sub { font-size:0.8rem; }
+    .lay { gap:1rem; }
+    .cp { flex:0 0 auto; width:100%; }
+    .chp { min-width:0; width:100%; }
+    .sort-btns { flex-wrap:wrap; }
+    .sort-btn { padding:4px 10px; font-size:0.7rem; }
+    .lr { gap:6px; }
+    .li { font-size:0.62rem; }
+    .ins { font-size:0.74rem; }
+    .footer { padding:1.5rem 1rem; }
+  }
 </style>
 </head>
 <body>
@@ -146,7 +162,8 @@ function getSorted(){var l=acts.filter(function(a){return a.hours>0;}).map(funct
 var G={pL:50,pR:16,pT:20,pB:35};
 function draw(sorted,budget){
   var cv=document.getElementById("cv"),ctx=cv.getContext("2d"),dpr=window.devicePixelRatio||1,r=cv.getBoundingClientRect();
-  cv.width=r.width*dpr;cv.height=500*dpr;ctx.scale(dpr,dpr);var w=r.width,h=500,cW=w-G.pL-G.pR,cH=h-G.pT-G.pB;
+  var canvasH = window.innerWidth <= 768 ? 320 : 500;
+  cv.width=r.width*dpr;cv.height=canvasH*dpr;ctx.scale(dpr,dpr);var w=r.width,h=canvasH,cW=w-G.pL-G.pR,cH=h-G.pT-G.pB;
   G.w=w;G.h=h;G.cW=cW;G.cH=cH;ctx.clearRect(0,0,w,h);
   var yMax=Math.ceil(budget/5)*5+5,tH=0;sorted.forEach(function(s){tH+=s.hours;});var fH=Math.max(0,24-tH);
 

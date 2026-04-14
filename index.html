@@ -43,6 +43,20 @@
   .about p { font-size:0.85rem; color:#666; line-height:1.7; margin-bottom:12px; }
 
   .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#666; background:rgba(255, 255, 255, 0.2); margin-top:2rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
+
+  @media (max-width: 768px) {
+    .page { padding:1rem; }
+    .hero { padding:1rem 1.2rem; margin-bottom:1rem; }
+    .hero h1 { font-size:1.2rem; }
+    .hero p { font-size:0.82rem; }
+    .venn-wrap { height:auto; aspect-ratio:720/430; max-width:100%; overflow:hidden; }
+    .venn-scale { transform-origin:top left; }
+    .about { padding:1.2rem 1.4rem; margin-top:1.5rem; }
+    .about h2 { font-size:1rem; }
+    .about p { font-size:0.8rem; }
+    .preview-img, .preview-cap { display:none !important; }
+    .footer { padding:1.5rem 1rem; }
+  }
 </style>
 </head>
 <body>
@@ -55,6 +69,7 @@
     <span style="font-size:1.05rem;font-weight:600;color:#2c2c2a;">Click the barrier to explore</span>
   </div>
   <div class="venn-wrap" id="venn">
+    <div class="venn-scale" id="vennScale">
 
     <!-- Mental / Intrinsic (left, pink) -->
     <div class="venn-circle" id="cMental"
@@ -97,6 +112,7 @@
     <div class="preview-cap" id="capTime">See how your daily energy budget leaves room for exercise</div>
     <div class="preview-cap" id="capAccess">Find gyms within walking distance and transit access, and compare accessibility scores</div>
     <div class="preview-cap" id="capOverlap">See how your daily energy budget leaves room for exercise</div>
+    </div>
   </div>
 
   <div class="about">
@@ -119,6 +135,24 @@ var links = {
   access: "boston_gym_map_v4.html",
   overlap: "energy_timeline_v5.html",
 };
+
+// Mobile scaling
+var VENN_BASE_W = 720;
+function scaleVenn() {
+  var wrap = document.getElementById("venn");
+  var inner = document.getElementById("vennScale");
+  var w = wrap.offsetWidth;
+  if (w < VENN_BASE_W) {
+    var s = w / VENN_BASE_W;
+    inner.style.transform = "scale(" + s + ")";
+    wrap.style.height = (430 * s) + "px";
+  } else {
+    inner.style.transform = "";
+    wrap.style.height = "430px";
+  }
+}
+scaleVenn();
+window.addEventListener("resize", scaleVenn);
 
 var previewEls = {
   mental: document.getElementById("prevMental"),
@@ -167,8 +201,10 @@ function hideAll() {
 
 venn.addEventListener("mousemove", function(e) {
   var vr = venn.getBoundingClientRect();
-  var mx = e.clientX - vr.left;
-  var my = e.clientY - vr.top;
+  var inner = document.getElementById("vennScale");
+  var s = inner.getBoundingClientRect().width / VENN_BASE_W;
+  var mx = (e.clientX - vr.left) / s;
+  var my = (e.clientY - vr.top) / s;
   var zone = getZone(mx, my);
 
   if (zone !== lastZone) {
@@ -219,8 +255,10 @@ venn.addEventListener("mouseleave", function() {
 
 venn.addEventListener("click", function(e) {
   var vr = venn.getBoundingClientRect();
-  var mx = e.clientX - vr.left;
-  var my = e.clientY - vr.top;
+  var inner = document.getElementById("vennScale");
+  var s = inner.getBoundingClientRect().width / VENN_BASE_W;
+  var mx = (e.clientX - vr.left) / s;
+  var my = (e.clientY - vr.top) / s;
   var zone = getZone(mx, my);
   if (zone && links[zone]) window.location.href = links[zone];
 });
