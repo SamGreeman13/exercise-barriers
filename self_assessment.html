@@ -375,14 +375,10 @@ document.getElementById("radar").addEventListener("mousemove", function(e) {
     if (found >= 0) {
       var cv2 = document.getElementById("radar");
       var ctx = cv2.getContext("2d");
-      var dpr = window.devicePixelRatio || 1;
-      ctx.save();
-      ctx.scale(dpr, dpr);
       var d = dotPositions[found];
       ctx.beginPath(); ctx.arc(d.x, d.y, 10, 0, Math.PI*2);
       ctx.fillStyle = "#2c2c2a"; ctx.fill();
       ctx.strokeStyle = "#fff"; ctx.lineWidth = 2.5; ctx.stroke();
-      ctx.restore();
     }
   }
 
