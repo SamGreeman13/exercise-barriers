@@ -38,13 +38,15 @@
   .radar-legend-item { font-size:0.72rem; color:#888; display:flex; align-items:center; gap:5px; }
   .radar-legend-swatch { width:10px; height:10px; border-radius:2px; display:inline-block; }
 
-  .tip-card { background:rgba(255,255,255,0.5); border:1px solid rgba(0,0,0,0.04); border-radius:12px; padding:14px 18px;
-    font-size:0.8rem; line-height:1.6; width:100%; max-width:460px; display:none;
+  .tip-card { background:rgba(255,255,255,0.35); border:1px solid rgba(0,0,0,0.06); border-radius:12px; padding:14px 18px;
+    font-size:0.8rem; line-height:1.6; width:100%; display:none; margin-top:1.5rem;
     box-shadow:0 1px 4px rgba(0,0,0,0.16); }
   .tip-card-title { font-weight:600; margin-bottom:6px; color:#2c2c2a; }
   .tip-card-sub { font-size:0.72rem; color:#888; margin-bottom:10px; }
   .tip-sol { padding:4px 0; font-size:0.78rem; }
   .tip-sol-name { font-weight:500; }
+  .tip-low { font-size:0.78rem; color:#1D9E75; font-style:italic; }
+
   .footer { text-align:center; padding:2rem; font-size:0.75rem; color:#666; background:rgba(255,255,255,0.35); margin-top:2rem; box-shadow:0 1px 4px rgba(0,0,0,0.16); }
 
   @media (max-width: 768px) {
@@ -114,10 +116,9 @@
         <div class="radar-legend-item"><span class="radar-legend-swatch" style="background:#D4537E"></span>Average of all participants</div>
       </div>
       <div style="text-align:center;margin-bottom:12px;padding:8px 16px;background:rgba(255,255,255,0.5);border-radius:12px;box-shadow:0 1px 4px rgba(0,0,0,0.16);font-size:0.82rem;font-weight:600;color:#2c2c2a;">Click any point on your profile to see how others overcame that barrier</div>
-      <div class="tip-card" id="tipCard"></div>
     </div>
   </div>
-</div>
+  <div class="tip-card" id="tipCard"></div>
 </div>
 <div class="footer">
   T&#233a Adams · Sam Greeman · Northeastern University
@@ -145,7 +146,7 @@ var barrierSolutions = {
     solutions: [
       {name:"Focusing on how exercise feels, not looks"},
       {name:"Group classes for community"},
-      {name:"Accountability buddy"},
+      {name:"Accountability partner"},
       {name:"Limiting social media before gym"},
       {name:"Support system outside social media"}
     ]
@@ -313,17 +314,37 @@ function drawRadar(user) {
   }
 }
 
+// Barrier threshold — scores at or above this count as a real barrier
+var BARRIER_THRESHOLD = 6;
+
+// For confidence, the scale is inverted: low score = barrier
+function getBarrierScore(idx, user) {
+  var vals = [user.intim, user.social, user.conf, user.judge, user.partner];
+  if (idx === 2) return 11 - vals[2]; // invert confidence
+  return vals[idx];
+}
+
 function showBarrierTip(idx) {
   var card = document.getElementById("tipCard");
   var b = barrierSolutions[idx];
+  var user = getUserProfile();
+  var score = getBarrierScore(idx, user);
 
   var html = '<div class="tip-card-title">' + b.label + '</div>';
-  html += '<div class="tip-card-sub">' + b.desc + '</div>';
 
-  b.solutions.forEach(function(s, i) {
-    html += '<div class="tip-sol"><span style="color:#D4537E;font-weight:600;margin-right:6px;">' + (i+1) + '.</span>';
-    html += '<span class="tip-sol-name">' + s.name + '</span></div>';
-  });
+  if (score < BARRIER_THRESHOLD) {
+    // Low score — not a real barrier for this user
+    var confMsg = idx === 2
+      ? "You rated your gym confidence fairly high — this doesn\u2019t seem to be a major barrier for you."
+      : "Based on your rating, this doesn\u2019t seem to be a major barrier for you.";
+    html += '<div class="tip-low">' + confMsg + '</div>';
+  } else {
+    html += '<div class="tip-card-sub">' + b.desc + '</div>';
+    b.solutions.forEach(function(s, i) {
+      html += '<div class="tip-sol"><span style="color:#D4537E;font-weight:600;margin-right:6px;">' + (i+1) + '.</span>';
+      html += '<span class="tip-sol-name">' + s.name + '</span></div>';
+    });
+  }
 
   card.innerHTML = html;
   card.style.display = "block";
