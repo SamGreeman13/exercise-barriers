@@ -22,6 +22,10 @@ A radar chart where users rate themselves on five psychological dimensions (gym 
 ### Gym Accessibility Map — `boston_gym_map_v4.html`
 An isochrone-based map showing gym accessibility across Boston by walking and transit time. Generated from `isochrone_v4.ipynb` using the MBTA V3 API (chosen over MassGIS to include Green Line Extension data).
 
+
+## Supplemental Materials
+All of the Notebooks and Scripts used in during the project are in this folder. The programs won't run because we removed the API keys for privacy, and we also made all interview files anonymous.
+
 ## Authors
 
 Téa Adams · Sam Greeman
