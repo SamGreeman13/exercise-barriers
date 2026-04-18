@@ -25,7 +25,6 @@ An isochrone-based map showing gym accessibility across Boston by walking and tr
 
 ## Supplemental Materials
 All of the Notebooks and Scripts used in during the project are in this folder. The programs won't run because we removed the API keys for privacy, and we also made all interview files anonymous.
-Additionally, all notebooks were run before these removals and privacy measures, so the printed statements and outputs in the notebooks are from stale runs.
 
 ## Authors
 
