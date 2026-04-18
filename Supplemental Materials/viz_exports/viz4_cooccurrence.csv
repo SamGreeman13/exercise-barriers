@@ -1,0 +1,61 @@
+theme_1,theme_2,count
+Time Constraints,Low Motivation,1
+Time Constraints,Nutrition Energy,2
+Time Constraints,Cost Access,6
+Body Image,Social Media Influence,9
+Body Image,Gym Intimidation,2
+Body Image,Mental Health,3
+Body Image,Positive Self Image,4
+Body Image,Intrinsic Motivation,1
+Social Media Influence,Body Image,9
+Social Media Influence,Mental Health,1
+Social Media Influence,Positive Self Image,1
+Lack Of Knowledge,Gym Intimidation,1
+Lack Of Knowledge,Social Support,1
+Low Motivation,Time Constraints,1
+Gym Intimidation,Body Image,2
+Gym Intimidation,Lack Of Knowledge,1
+Gym Intimidation,Social Support,1
+Gym Intimidation,Cost Access,1
+Gym Intimidation,Autonomy Preference,1
+Social Support,Lack Of Knowledge,1
+Social Support,Gym Intimidation,1
+Social Support,Nutrition Energy,1
+Social Support,Cost Access,1
+Social Support,Positive Self Image,2
+Social Support,Intrinsic Motivation,2
+Social Support,Extrinsic Motivation,1
+Social Support,Autonomy Preference,6
+Social Support,Past Athletic Identity,1
+Nutrition Energy,Time Constraints,2
+Nutrition Energy,Social Support,1
+Nutrition Energy,Mental Health,1
+Cost Access,Time Constraints,6
+Cost Access,Gym Intimidation,1
+Cost Access,Social Support,1
+Mental Health,Body Image,3
+Mental Health,Social Media Influence,1
+Mental Health,Nutrition Energy,1
+Mental Health,Positive Self Image,1
+Mental Health,Intrinsic Motivation,1
+Positive Self Image,Body Image,4
+Positive Self Image,Social Media Influence,1
+Positive Self Image,Social Support,2
+Positive Self Image,Mental Health,1
+Positive Self Image,Intrinsic Motivation,12
+Positive Self Image,Autonomy Preference,1
+Intrinsic Motivation,Body Image,1
+Intrinsic Motivation,Social Support,2
+Intrinsic Motivation,Mental Health,1
+Intrinsic Motivation,Positive Self Image,12
+Intrinsic Motivation,Autonomy Preference,3
+Intrinsic Motivation,Past Athletic Identity,5
+Extrinsic Motivation,Social Support,1
+Extrinsic Motivation,Autonomy Preference,1
+Autonomy Preference,Gym Intimidation,1
+Autonomy Preference,Social Support,6
+Autonomy Preference,Positive Self Image,1
+Autonomy Preference,Intrinsic Motivation,3
+Autonomy Preference,Extrinsic Motivation,1
+Past Athletic Identity,Social Support,1
+Past Athletic Identity,Intrinsic Motivation,5

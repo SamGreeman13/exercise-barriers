@@ -1,0 +1,20 @@
+question,Interview 3.txt,Interview 4.txt,Interview 5a.txt,Interview 5b.txt,J Interview.txt,K Interview.txt,Q Interview.txt,T Interview.txt
+Q1. What do you do outside of work/school?,1.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0
+Q2. How much time would you say you spend on social media on a typical day? What kind of content do you usually see?,-1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+Q3. How does scrolling through content on social media make you feel?,-1.0,1.0,-1.0,2.0,0.0,0.0,-1.0,-1.0
+Q4. Do you find yourself comparing your image to people you see online? How does that affect you?,1.0,1.0,-1.0,1.0,1.0,,1.0,0.0
+"Q5. When you're feeling good about yourself, what's usually contributing to that?",2.0,2.0,2.0,2.0,2.0,2.0,2.0,2.0
+Q6. What would you say has the biggest influence on how you feel about yourself?,0.0,0.0,1.0,1.0,2.0,2.0,2.0,2.0
+Q7. How would you describe your relationship with your body currently?,0.0,2.0,-2.0,-2.0,2.0,,0.0,1.0
+Q8. Have you ever avoided a physical activity because of how you thought you'd look doing working out?,-1.0,0.0,0.0,0.0,1.0,1.0,0.0,-1.0
+Q9. Were you involved in any sports or physical activities? How did that shape how you think about exercise now?,1.0,2.0,2.0,2.0,2.0,2.0,1.0,1.0
+Q10. Have you ever signed up for a gym and stopped going? What led to that?,-1.0,0.0,-1.0,-1.0,0.0,-1.0,0.0,-1.0
+Q11. When was the last time you thought about going to the gym but didn't end up going?,-1.0,-1.0,-1.0,0.0,-1.0,-1.0,-1.0,-1.0
+"Q12. If you went to the gym tomorrow, how confident would you be knowing where to start or what to do?",2.0,-1.0,0.0,2.0,2.0,2.0,2.0,2.0
+Q13. Do you ever feel like gyms are catered for certain types of people? What gives you that impression?,-1.0,-1.0,-1.0,0.0,1.0,0.0,0.0,-1.0
+"Q14. When you think about going to the gym, do you picture yourself going alone or with someone? Why?",0.0,0.0,1.0,0.0,1.0,1.0,1.0,1.0
+"Q15. What is your preference working out alone, taking a group fitness class, or exercising casually with friends?",1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0
+"Q16. If something could remove one barrier to getting you into the gym consistently, what would it be?",0.0,0.0,-1.0,1.0,-1.0,1.0,-1.0,0.0
+Q17. How would you feel best supported going to the gym?,1.0,1.0,1.0,1.0,,1.0,,1.0
+Q18. What would you hope to gain from going to the gym?,2.0,2.0,2.0,2.0,2.0,2.0,1.0,2.0
+Q4. Do you find yourself comparing your image to people you see online?,,,-1.0,,1.0,1.0,1.0,

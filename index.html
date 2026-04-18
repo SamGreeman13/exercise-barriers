@@ -69,7 +69,6 @@
   </div>
   <div class="venn-wrap" id="venn">
 
-    <!-- Mental / Intrinsic (left, pink) -->
     <div class="venn-circle" id="cMental"
       style="width:310px;height:310px;left:50px;top:85px;background:rgba(212,83,126,0.10);border:1.5px solid rgba(212,83,126,0.30);">
     </div>
@@ -78,7 +77,6 @@
       <div class="circle-label-count" style="color:#993556;">Body image, intimidation,<br>social media influence</div>
     </div>
 
-    <!-- Time (right, blue) -->
     <div class="venn-circle" id="cTime"
       style="width:350px;height:350px;left:260px;top:65px;background:rgba(55,138,221,0.08);border:1.5px solid rgba(55,138,221,0.25);">
     </div>
@@ -87,7 +85,6 @@
       <div class="circle-label-count" style="color:#185FA5;">Scheduling, energy,<br>competing priorities</div>
     </div>
 
-    <!-- Accessibility / Distance (inside Time, right side) -->
     <div class="inner-circle" id="cAccess"
       style="width:155px;height:155px;left:420px;top:200px;background:rgba(55,138,221,0.16);border:1.5px solid rgba(55,138,221,0.35);">
     </div>
@@ -96,12 +93,10 @@
       <div class="circle-label-count" style="color:#185FA5;font-size:10px;">Cost, proximity,<br>transit access</div>
     </div>
 
-    <!-- Overlap label -->
     <div class="zone-label" style="left:265px;top:210px;width:90px;">
       <div class="zone-label-name" style="color:#791F1F;">Time vs.<br>Mental Tradeoff</div>
     </div>
 
-    <!-- Preview images -->
     <img class="preview-img" id="prevMental" src="preview_assessment.png" alt="Self-assessment tool with sliders for gym intimidation, social media impact, confidence, fear of judgment, and partner preference, alongside a radar chart comparing your profile to similar participants"">
     <img class="preview-img" id="prevTime" src="preview_energy.png" alt="">
     <img class="preview-img" id="prevAccess" src="preview_map.png" alt="">
@@ -147,7 +142,6 @@ var capEls = {
   overlap: document.getElementById("capOverlap"),
 };
 
-// Base coordinates at 720px width
 var BASE_W = 720, BASE_H = 430;
 var circlesBase = {
   mental: { cx: 205, cy: 240, r: 155 },
@@ -169,7 +163,6 @@ function sizeVenn() {
   var s = getScale();
   venn.style.height = (BASE_H * s) + "px";
 
-  // Scale all absolutely positioned children
   var els = venn.querySelectorAll(".venn-circle, .inner-circle, .circle-label, .zone-label");
   els.forEach(function(el) {
     if (!el.dataset.origStyle) el.dataset.origStyle = el.getAttribute("style") || "";
@@ -183,7 +176,6 @@ function sizeVenn() {
     });
   });
 
-  // Scale font sizes in labels
   venn.querySelectorAll(".circle-label-name").forEach(function(el) {
     var base = parseFloat(el.dataset.baseFontSize || (el.dataset.baseFontSize = el.style.fontSize || "16px"));
     el.style.fontSize = (base * s) + "px";
@@ -201,7 +193,6 @@ sizeVenn();
 window.addEventListener("resize", sizeVenn);
 
 function getZone(mx, my) {
-  // mx, my are in screen coords relative to venn; convert to base coords
   var s = getScale();
   var bx = mx / s, by = my / s;
   var inMental = dist(bx, by, circlesBase.mental.cx, circlesBase.mental.cy) <= circlesBase.mental.r;
@@ -289,7 +280,6 @@ venn.addEventListener("click", function(e) {
   if (zone && links[zone]) window.location.href = links[zone];
 });
 
-// Touch support for mobile
 venn.addEventListener("touchend", function(e) {
   var touch = e.changedTouches[0];
   var vr = venn.getBoundingClientRect();

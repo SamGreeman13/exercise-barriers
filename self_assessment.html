@@ -127,9 +127,8 @@
 var axisLabels = ["Gym\nintimidation","Social media\nimpact","Gym\nconfidence","Fear of\njudgment","Need a\npartner"];
 var axisNames = ["Gym intimidation","Social media impact","Gym confidence","Fear of judgment","Need a partner"];
 
-// Solutions mapped per barrier dimension — what helped participants who scored high on each
 var barrierSolutions = {
-  0: { // Gym intimidation
+  0: {
     label: "Gym intimidation",
     desc: "What helped participants who felt intimidated by gyms:",
     solutions: [
@@ -140,7 +139,7 @@ var barrierSolutions = {
       {name:"Structured classes from past sports"}
     ]
   },
-  1: { // Social media impact
+  1: {
     label: "Social media's impact on body image",
     desc: "What helped participants who felt affected by social media:",
     solutions: [
@@ -151,7 +150,7 @@ var barrierSolutions = {
       {name:"Support system outside social media"}
     ]
   },
-  2: { // Gym confidence (low = barrier)
+  2: {
     label: "Low gym confidence",
     desc: "What helped participants who didn't know what to do at the gym:",
     solutions: [
@@ -162,7 +161,7 @@ var barrierSolutions = {
       {name:"Personal training sessions"}
     ]
   },
-  3: { // Fear of judgment
+  3: {
     label: "Fear of being judged",
     desc: "What helped participants who worried about being judged:",
     solutions: [
@@ -173,7 +172,7 @@ var barrierSolutions = {
       {name:"Remembering nobody is watching"}
     ]
   },
-  4: { // Need a partner
+  4: {
     label: "Needing a workout partner",
     desc: "What helped participants who needed someone to go with:",
     solutions: [
@@ -197,7 +196,6 @@ var participants = [
   {id:8, intim:6, social:6, conf:10, judge:5, partner:5},
 ];
 
-// Compute average of ALL participants (fixed, not dependent on similarity)
 var avgAll = [0,0,0,0,0];
 participants.forEach(function(p) {
   avgAll[0] += p.intim; avgAll[1] += p.social; avgAll[2] += p.conf; avgAll[3] += p.judge; avgAll[4] += p.partner;
@@ -220,7 +218,6 @@ function getUserProfile() {
   return u;
 }
 
-// Store dot positions for click detection
 var dotPositions = [];
 
 function drawRadar(user) {
@@ -236,7 +233,6 @@ function drawRadar(user) {
 
   ctx.clearRect(0,0,w,h);
 
-  // Grid rings
   for (var ring = 2; ring <= 10; ring += 2) {
     ctx.beginPath();
     ctx.strokeStyle = "#e8e7e2"; ctx.lineWidth = 0.5;
@@ -249,7 +245,6 @@ function drawRadar(user) {
     ctx.stroke();
   }
 
-  // Axis lines and labels
   for (var i = 0; i < n; i++) {
     var a = (Math.PI*2/n)*i - Math.PI/2;
     ctx.beginPath(); ctx.moveTo(cx,cy);
@@ -265,7 +260,6 @@ function drawRadar(user) {
     });
   }
 
-  // Draw average of all participants — green area
   ctx.beginPath();
   for (var i = 0; i <= n; i++) {
     var idx = i % n;
@@ -283,7 +277,6 @@ function drawRadar(user) {
   ctx.stroke();
   ctx.globalAlpha = 1;
 
-  // Draw user profile — dark area
   var uVals = [user.intim, user.social, user.conf, user.judge, user.partner];
   ctx.beginPath();
   for (var i = 0; i <= n; i++) {
@@ -301,7 +294,6 @@ function drawRadar(user) {
   ctx.lineWidth = 3;
   ctx.stroke();
 
-  // Draw clickable dots and store positions
   dotPositions = [];
   for (var i = 0; i < n; i++) {
     var a = (Math.PI*2/n)*i - Math.PI/2;
@@ -314,10 +306,8 @@ function drawRadar(user) {
   }
 }
 
-// Barrier threshold — scores at or above this count as a real barrier
 var BARRIER_THRESHOLD = 6;
 
-// For confidence, the scale is inverted: low score = barrier
 function getBarrierScore(idx, user) {
   var vals = [user.intim, user.social, user.conf, user.judge, user.partner];
   if (idx === 2) return 11 - vals[2]; // invert confidence
@@ -333,7 +323,6 @@ function showBarrierTip(idx) {
   var html = '<div class="tip-card-title">' + b.label + '</div>';
 
   if (score < BARRIER_THRESHOLD) {
-    // Low score — not a real barrier for this user
     var confMsg = idx === 2
       ? "You rated your gym confidence fairly high — this doesn\u2019t seem to be a major barrier for you."
       : "Based on your rating, this doesn\u2019t seem to be a major barrier for you.";
@@ -352,7 +341,6 @@ function showBarrierTip(idx) {
 
 var hoveredDot = -1;
 
-// Hover: enlarge dot on mouseover
 document.getElementById("radar").addEventListener("mousemove", function(e) {
   var cv = this;
   var rect = cv.getBoundingClientRect();
@@ -371,7 +359,6 @@ document.getElementById("radar").addEventListener("mousemove", function(e) {
     var user = getUserProfile();
     drawRadar(user);
 
-    // Redraw the hovered dot larger
     if (found >= 0) {
       var cv2 = document.getElementById("radar");
       var ctx = cv2.getContext("2d");
@@ -393,7 +380,6 @@ document.getElementById("radar").addEventListener("mouseleave", function() {
   }
 });
 
-// Click: show solutions below
 document.getElementById("radar").addEventListener("click", function(e) {
   var cv = this;
   var rect = cv.getBoundingClientRect();
@@ -410,7 +396,6 @@ document.getElementById("radar").addEventListener("click", function(e) {
   }
 });
 
-// Touch support for mobile — larger hit area
 document.getElementById("radar").addEventListener("touchend", function(e) {
   var cv = this;
   var rect = cv.getBoundingClientRect();
